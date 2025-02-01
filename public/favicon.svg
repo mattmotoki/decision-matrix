@@ -3,9 +3,9 @@
   <rect width="32" height="32" rx="6" fill="#3b82f6"/>
   
   <!-- Priority bars (from longest to shortest) -->
-  <rect x="10" y="8" width="20" height="4" rx="1" fill="white" opacity="0.9"/>
-  <rect x="10" y="14" width="16" height="4" rx="1" fill="white" opacity="0.7"/>
-  <rect x="10" y="20" width="12" height="4" rx="1" fill="white" opacity="0.5"/>
+  <rect x="10" y="8" width="18" height="4" rx="1" fill="white" opacity="0.9"/>
+  <rect x="10" y="14" width="14" height="4" rx="1" fill="white" opacity="0.7"/>
+  <rect x="10" y="20" width="10" height="4" rx="1" fill="white" opacity="0.5"/>
   
   <!-- Small circles representing checkboxes -->
   <circle cx="6" cy="10" r="1.5" fill="white"/>
