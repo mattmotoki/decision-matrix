@@ -1,42 +1,133 @@
-#root {
-  max-width: 1280px;
+.task-prioritizer {
+  max-width: 56rem;  /* 4xl */
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1.5rem;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.input-card {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.input-group {
+  margin-bottom: 1rem;
+}
+
+.input-label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.text-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.25rem;
+}
+
+.dimension-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.dimension-label {
+  align-self: center;
+  font-weight: 500;
+  width: 8rem;
+}
+
+.button-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.add-button {
+  padding: 0.5rem 1rem;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.add-button:hover {
+  background-color: #2563eb;
+}
+
+.preview-score {
+  color: #4b5563;
+}
+
+.preview-score-value {
+  font-weight: 500;
+}
+
+.task-table {
+  width: 100%;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.table-header {
+  background-color: #f9fafb;
+  padding: 0.5rem;
+}
+
+.table-header-cell {
+  padding: 0.5rem;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.table-header-cell.text-left {
+  text-align: left;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.table-row {
+  border-top: 1px solid #e5e7eb;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.table-cell {
+  padding: 0.5rem;
 }
 
-.card {
-  padding: 2em;
+.table-cell.text-center {
+  text-align: center;
 }
 
-.read-the-docs {
-  color: #888;
+.number-input {
+  width: 4rem;
+  padding: 0.25rem;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.25rem;
+}
+
+.score-value {
+  font-weight: 500;
+}
+
+.delete-button {
+  padding: 0.25rem 0.75rem;
+  background-color: #ef4444;
+  color: white;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.delete-button:hover {
+  background-color: #dc2626;
 }
