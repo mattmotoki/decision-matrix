@@ -4,7 +4,8 @@ import { ChevronUp, ChevronDown } from 'lucide-react';
 export function SliderWithControls({ 
   name,
   label, 
-  value, 
+  value,
+  weight,
   onChange,
   min = 0,
   max = 10
@@ -39,8 +40,9 @@ export function SliderWithControls({
 
   return (
     <div className="flex items-center gap-2">
-      <label htmlFor={name} className="w-52">
-        {label}:
+      <label htmlFor={name} className="w-52 flex items-center gap-2">
+        <span>{label}</span>
+        <span className="text-sm text-gray-500">(×{weight})</span>
       </label>
       <div className="flex-1 flex items-center gap-2">
         <input

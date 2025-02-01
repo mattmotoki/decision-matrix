@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Settings } from 'lucide-react';
-import { SliderWithControls } from './components/SliderWithControls';
+import { TaskInputForm } from './components/TaskInputForm';
 import { SettingsModal } from './components/SettingsModal';
+import { TaskTable } from './components/TaskTable';
 import './App.css';
 
 const initialDimensions = [
@@ -18,26 +18,24 @@ export function App() {
     Object.fromEntries(dimensions.map(dim => [dim.name, 5]))
   );
   const [taskName, setTaskName] = useState('');
-  const [activeRowIndex, setActiveRowIndex] = useState(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [editingTaskId, setEditingTaskId] = useState(null);
 
   useEffect(() => {
-    if (taskName === '') {
+    if (taskName === '' && !editingTaskId) {
       setTaskName(`Task ${tasks.length + 1}`);
     }
-  }, [tasks.length, taskName]);
+  }, [tasks.length, taskName, editingTaskId]);
 
   // Update formValues when dimensions change
   useEffect(() => {
     setFormValues(prev => {
       const newValues = { ...prev };
-      // Add new dimensions with default value 5
       dimensions.forEach(dim => {
         if (!(dim.name in newValues)) {
           newValues[dim.name] = 5;
         }
       });
-      // Remove dimensions that no longer exist
       Object.keys(newValues).forEach(key => {
         if (!dimensions.some(dim => dim.name === key)) {
           delete newValues[key];
@@ -46,12 +44,11 @@ export function App() {
       return newValues;
     });
 
-    // Update existing tasks with new dimensions
     setTasks(prev => prev.map(task => {
       const updatedTask = { ...task };
       dimensions.forEach(dim => {
         if (!(dim.name in updatedTask)) {
-          updatedTask[dim.name] = 0; // Set default value of 0 for new dimensions
+          updatedTask[dim.name] = 0;
         }
       });
       return updatedTask;
@@ -68,27 +65,61 @@ export function App() {
     return [...tasksToSort].sort((a, b) => calculateImportance(b) - calculateImportance(a));
   };
 
-  const handleAddTask = () => {
+  const isTaskNameDuplicate = (name, excludeId = null) => {
+    return tasks.some(task => 
+      task.name.toLowerCase() === name.toLowerCase() && task.id !== excludeId
+    );
+  };
+
+  const handleAddOrUpdateTask = () => {
     if (taskName.trim() === '') {
       alert('Please enter a task name.');
       return;
     }
 
-    const newTask = {
-      id: Date.now(),
-      name: taskName,
-      ...formValues
-    };
+    if (isTaskNameDuplicate(taskName, editingTaskId)) {
+      alert('A task with this name already exists.');
+      return;
+    }
 
-    setTasks(prev => sortTasks([...prev, newTask]));
+    if (editingTaskId) {
+      setTasks(prev => sortTasks(
+        prev.map(task => 
+          task.id === editingTaskId
+            ? { ...task, name: taskName, ...formValues }
+            : task
+        )
+      ));
+      setEditingTaskId(null);
+    } else {
+      const newTask = {
+        id: Date.now(),
+        name: taskName,
+        ...formValues
+      };
+      setTasks(prev => sortTasks([...prev, newTask]));
+    }
+
     setTaskName('');
     setFormValues(Object.fromEntries(dimensions.map(dim => [dim.name, 5])));
   };
 
   const handleDeleteTask = (index) => {
-    const newTasks = [...tasks];
-    newTasks.splice(index, 1);
-    setTasks(newTasks);
+    setTasks(prev => {
+      const newTasks = [...prev];
+      newTasks.splice(index, 1);
+      return newTasks;
+    });
+  };
+
+  const handleEditTask = (task) => {
+    setEditingTaskId(task.id);
+    setTaskName(task.name);
+    setFormValues(
+      Object.fromEntries(
+        dimensions.map(dim => [dim.name, task[dim.name]])
+      )
+    );
   };
 
   const handleSliderChange = (dimension, value) => {
@@ -98,161 +129,45 @@ export function App() {
     }));
   };
 
-  const updateTaskValue = (taskIndex, dimension, value) => {
-    const newTasks = [...tasks];
-    newTasks[taskIndex] = {
-      ...tasks[taskIndex],
-      [dimension]: value
-    };
-    setTasks(newTasks);
-  };
-
-  const handleRowFocus = (index) => {
-    setActiveRowIndex(index);
-  };
-
-  const handleRowLeave = () => {
-    if (activeRowIndex !== null) {
-      if (document.activeElement instanceof HTMLElement) {
-        document.activeElement.blur();
-      }
-      setTasks(prev => sortTasks(prev));
-      setActiveRowIndex(null);
-    }
-  };
-
   const previewScore = calculateImportance(formValues);
   const formulaString = dimensions
     .map(dim => `${dim.weight}×${formValues[dim.name]}`)
     .join(' + ');
 
-  return (
-    <div className="task-prioritizer">
-      <h1 className="page-title">
-        Decision Matrix Task Prioritizer
-      </h1>
-      
-      <div className="input-card">
-        <div className="flex justify-between items-start mb-4">
-          <div className="input-group flex-1">
-            <label htmlFor="taskName" className="input-label">
-              Task Name:
-            </label>
-            <input
-              type="text"
-              id="taskName"
-              value={taskName}
-              onChange={(e) => setTaskName(e.target.value)}
-              className="text-input"
-              placeholder="Enter task name"
-            />
-          </div>
-          <button
-            onClick={() => setIsSettingsOpen(true)}
-            className="ml-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full"
-            title="Settings"
-          >
-            <Settings size={20} />
-          </button>
-        </div>
-
-        <div className="grid gap-2">
-          {dimensions.map(dim => (
-            <SliderWithControls
-              key={dim.name}
-              name={dim.name}
-              label={dim.label}
-              weight={dim.weight}
-              value={formValues[dim.name]}
-              onChange={(value) => handleSliderChange(dim.name, value)}
-            />
-          ))}
-        </div>
-
-        <div className="button-row">
-          <button
-            onClick={handleAddTask}
-            className="add-button"
-          >
-            Add Task
-          </button>
-          <div className="preview-score">
-            <div>Score Preview: <span className="preview-score-value">{previewScore.toFixed(1)}</span> = {formulaString}</div>
-          </div>
-        </div>
-      </div>
-
-      <div className="w-full bg-white rounded-lg shadow">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-4 py-2 text-left font-medium text-gray-700">Task Name</th>
-              {dimensions.map(dim => (
-                <th key={dim.name} className="px-4 py-2 text-center font-medium text-gray-700 w-32">
-                  {dim.label} (×{dim.weight})
-                </th>
-              ))}
-              <th className="px-4 py-2 text-center font-medium text-gray-700 w-24">Score</th>
-              <th className="px-4 py-2 text-center font-medium text-gray-700 w-24">Actions</th>
-            </tr>
-          </thead>
-        </table>
+    return (
+      <div className="task-prioritizer">
+        <h1 className="page-title">
+          Decision Matrix Task Prioritizer
+        </h1>
         
-        <div className="relative" style={{ height: `${tasks.length * 48}px`, minHeight: '0px' }}>
-          {tasks.map((task, index) => (
-            <div 
-              key={task.id}
-              className={`absolute w-full transition-transform duration-300 ease-in-out border-t border-gray-200 ${
-                activeRowIndex === index ? 'bg-blue-50' : 'hover:bg-gray-50'
-              }`}
-              style={{ transform: `translateY(${index * 48}px)` }}
-              onMouseLeave={handleRowLeave}
-            >
-              <table className="w-full">
-                <tbody>
-                  <tr>
-                    <td className="px-4 py-2">{task.name}</td>
-                    {dimensions.map(dim => (
-                      <td key={dim.name} className="px-4 py-2 text-center w-32">
-                        <input
-                          type="number"
-                          min="0"
-                          max="10"
-                          value={task[dim.name]}
-                          onChange={(e) => {
-                            const value = Math.min(10, Math.max(0, Number(e.target.value)));
-                            updateTaskValue(index, dim.name, value);
-                          }}
-                          onFocus={() => handleRowFocus(index)}
-                          className="w-16 px-2 py-1 text-center border border-gray-300 rounded"
-                        />
-                      </td>
-                    ))}
-                    <td className="px-4 py-2 text-center font-medium w-24">
-                      {calculateImportance(task).toFixed(1)}
-                    </td>
-                    <td className="px-4 py-2 text-center w-24">
-                      <button
-                        onClick={() => handleDeleteTask(index)}
-                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          ))}
-        </div>
+        <TaskInputForm
+          taskName={taskName}
+          onTaskNameChange={setTaskName}
+          dimensions={dimensions}
+          formValues={formValues}
+          onFormValueChange={setFormValues}
+          onSettingsOpen={() => setIsSettingsOpen(true)}
+          onSubmit={handleAddOrUpdateTask}
+          editingTaskId={editingTaskId}
+          previewScore={previewScore}
+          formulaString={formulaString}
+        />
+  
+        <TaskTable
+          tasks={tasks}
+          dimensions={dimensions}
+          onDeleteTask={handleDeleteTask}
+          onEditTask={handleEditTask}
+          calculateImportance={calculateImportance}
+        />
+  
+        <SettingsModal
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+          dimensions={dimensions}
+          onDimensionsChange={setDimensions}
+        />
       </div>
+    );
 
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        dimensions={dimensions}
-        onDimensionsChange={setDimensions}
-      />
-    </div>
-  );
 }
