@@ -1,8 +1,15 @@
-# React + Vite
+# Decision Matrix Task Prioritizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A tool that simplifies task planning by breaking it into two intuitive steps:
 
-Currently, two official plugins are available:
+1. **Low-level thinking**: Score individual tasks across different dimensions like urgency and difficulty
+2. **High-level thinking**: Set dimension weights once to reflect your overall priorities
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This separation helps you make better decisions by focusing on one thing at a time - first the details of each task, then your general priorities.
+
+## Getting Started
+
+```bash
+npm install
+npm run dev
+```
