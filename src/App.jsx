@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Settings } from 'lucide-react';
 import { SliderWithControls } from './components/SliderWithControls';
+import { SettingsModal } from './components/SettingsModal';
 import './App.css';
 
-const dimensions = [
+const initialDimensions = [
   { name: 'easiness', label: 'Easiness', weight: 1 },
   { name: 'urgency', label: 'Urgency', weight: 3 },
   { name: 'monetaryBenefit', label: 'Monetary Benefit', weight: 2 },
@@ -10,18 +12,51 @@ const dimensions = [
 ];
 
 export function App() {
+  const [dimensions, setDimensions] = useState(initialDimensions);
   const [tasks, setTasks] = useState([]);
   const [formValues, setFormValues] = useState(
     Object.fromEntries(dimensions.map(dim => [dim.name, 5]))
   );
   const [taskName, setTaskName] = useState('');
   const [activeRowIndex, setActiveRowIndex] = useState(null);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
     if (taskName === '') {
       setTaskName(`Task ${tasks.length + 1}`);
     }
   }, [tasks.length, taskName]);
+
+  // Update formValues when dimensions change
+  useEffect(() => {
+    setFormValues(prev => {
+      const newValues = { ...prev };
+      // Add new dimensions with default value 5
+      dimensions.forEach(dim => {
+        if (!(dim.name in newValues)) {
+          newValues[dim.name] = 5;
+        }
+      });
+      // Remove dimensions that no longer exist
+      Object.keys(newValues).forEach(key => {
+        if (!dimensions.some(dim => dim.name === key)) {
+          delete newValues[key];
+        }
+      });
+      return newValues;
+    });
+
+    // Update existing tasks with new dimensions
+    setTasks(prev => prev.map(task => {
+      const updatedTask = { ...task };
+      dimensions.forEach(dim => {
+        if (!(dim.name in updatedTask)) {
+          updatedTask[dim.name] = 0; // Set default value of 0 for new dimensions
+        }
+      });
+      return updatedTask;
+    }));
+  }, [dimensions]);
 
   const calculateImportance = (task) => {
     return dimensions.reduce((sum, dim) => {
@@ -98,18 +133,27 @@ export function App() {
       </h1>
       
       <div className="input-card">
-        <div className="input-group">
-          <label htmlFor="taskName" className="input-label">
-            Task Name:
-          </label>
-          <input
-            type="text"
-            id="taskName"
-            value={taskName}
-            onChange={(e) => setTaskName(e.target.value)}
-            className="text-input"
-            placeholder="Enter task name"
-          />
+        <div className="flex justify-between items-start mb-4">
+          <div className="input-group flex-1">
+            <label htmlFor="taskName" className="input-label">
+              Task Name:
+            </label>
+            <input
+              type="text"
+              id="taskName"
+              value={taskName}
+              onChange={(e) => setTaskName(e.target.value)}
+              className="text-input"
+              placeholder="Enter task name"
+            />
+          </div>
+          <button
+            onClick={() => setIsSettingsOpen(true)}
+            className="ml-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full"
+            title="Settings"
+          >
+            <Settings size={20} />
+          </button>
         </div>
 
         <div className="grid gap-2">
@@ -145,7 +189,7 @@ export function App() {
               <th className="px-4 py-2 text-left font-medium text-gray-700">Task Name</th>
               {dimensions.map(dim => (
                 <th key={dim.name} className="px-4 py-2 text-center font-medium text-gray-700 w-32">
-                  {dim.label}
+                  {dim.label} (×{dim.weight})
                 </th>
               ))}
               <th className="px-4 py-2 text-center font-medium text-gray-700 w-24">Score</th>
@@ -154,7 +198,6 @@ export function App() {
           </thead>
         </table>
         
-        {/* Separate container for animated tbody */}
         <div className="relative" style={{ height: `${tasks.length * 48}px`, minHeight: '0px' }}>
           {tasks.map((task, index) => (
             <div 
@@ -203,6 +246,13 @@ export function App() {
           ))}
         </div>
       </div>
+
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        dimensions={dimensions}
+        onDimensionsChange={setDimensions}
+      />
     </div>
   );
 }
