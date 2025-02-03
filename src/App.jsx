@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { TaskInputForm } from './components/TaskInputForm';
 import { SettingsModal } from './components/SettingsModal';
 import { TaskTable } from './components/TaskTable';
+import { TaskArchive } from './components/TaskArchive';
 import './App.css';
 
 const initialDimensions = [
@@ -14,6 +15,7 @@ const initialDimensions = [
 export function App() {
   const [dimensions, setDimensions] = useState(initialDimensions);
   const [tasks, setTasks] = useState([]);
+  const [completedTasks, setCompletedTasks] = useState([]);
   const [formValues, setFormValues] = useState(
     Object.fromEntries(dimensions.map(dim => [dim.name, 5]))
   );
@@ -21,13 +23,6 @@ export function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [editingTaskId, setEditingTaskId] = useState(null);
 
-  useEffect(() => {
-    if (taskName === '' && !editingTaskId) {
-      setTaskName(`Task ${tasks.length + 1}`);
-    }
-  }, [tasks.length, taskName, editingTaskId]);
-
-  // Update formValues when dimensions change
   useEffect(() => {
     setFormValues(prev => {
       const newValues = { ...prev };
@@ -65,28 +60,20 @@ export function App() {
     return [...tasksToSort].sort((a, b) => calculateImportance(b) - calculateImportance(a));
   };
 
-  const isTaskNameDuplicate = (name, excludeId = null) => {
-    return tasks.some(task => 
-      task.name.toLowerCase() === name.toLowerCase() && task.id !== excludeId
-    );
-  };
-
   const handleAddOrUpdateTask = () => {
-    if (taskName.trim() === '') {
-      alert('Please enter a task name.');
-      return;
-    }
-
-    if (isTaskNameDuplicate(taskName, editingTaskId)) {
-      alert('A task with this name already exists.');
-      return;
-    }
-
+    const finalTaskName = taskName.trim() || 'unnamed';
+    
     if (editingTaskId) {
+      const originalTask = tasks.find(task => task.id === editingTaskId);
       setTasks(prev => sortTasks(
-        prev.map(task => 
+        prev.map(task =>
           task.id === editingTaskId
-            ? { ...task, name: taskName, ...formValues }
+            ? {
+              ...task,
+              name: finalTaskName,
+              ...formValues,
+              createdAt: originalTask.createdAt
+            }
             : task
         )
       ));
@@ -94,7 +81,8 @@ export function App() {
     } else {
       const newTask = {
         id: Date.now(),
-        name: taskName,
+        name: finalTaskName,
+        createdAt: new Date().toISOString(),
         ...formValues
       };
       setTasks(prev => sortTasks([...prev, newTask]));
@@ -102,14 +90,6 @@ export function App() {
 
     setTaskName('');
     setFormValues(Object.fromEntries(dimensions.map(dim => [dim.name, 5])));
-  };
-
-  const handleDeleteTask = (index) => {
-    setTasks(prev => {
-      const newTasks = [...prev];
-      newTasks.splice(index, 1);
-      return newTasks;
-    });
   };
 
   const handleEditTask = (task) => {
@@ -122,11 +102,35 @@ export function App() {
     );
   };
 
-  const handleSliderChange = (dimension, value) => {
-    setFormValues(prev => ({
-      ...prev,
-      [dimension]: value
-    }));
+  const handleCompleteTask = (task) => {
+    setTasks(prev => prev.filter(t => t.id !== task.id));
+    const completedTask = {
+      ...task,
+      completedAt: new Date().toISOString()
+    };
+    setCompletedTasks(prev => [completedTask, ...prev]);
+  };
+
+  const handleDeleteTask = (index) => {
+    setTasks(prev => {
+      const newTasks = [...prev];
+      newTasks.splice(index, 1);
+      return newTasks;
+    });
+  };
+
+  const handleDeleteCompletedTask = (index) => {
+    setCompletedTasks(prev => {
+      const newTasks = [...prev];
+      newTasks.splice(index, 1);
+      return newTasks;
+    });
+  };
+
+  const handleRestoreTask = (task) => {
+    const { completedAt, ...restoredTask } = task;
+    setTasks(prev => sortTasks([...prev, restoredTask]));
+    setCompletedTasks(prev => prev.filter(t => t.id !== task.id));
   };
 
   const previewScore = calculateImportance(formValues);
@@ -134,40 +138,49 @@ export function App() {
     .map(dim => `${dim.weight}×${formValues[dim.name]}`)
     .join(' + ');
 
-    return (
-      <div className="task-prioritizer">
-        <h1 className="page-title">
-          Decision Matrix Task Prioritizer
-        </h1>
-        
-        <TaskInputForm
-          taskName={taskName}
-          onTaskNameChange={setTaskName}
-          dimensions={dimensions}
-          formValues={formValues}
-          onFormValueChange={setFormValues}
-          onSettingsOpen={() => setIsSettingsOpen(true)}
-          onSubmit={handleAddOrUpdateTask}
-          editingTaskId={editingTaskId}
-          previewScore={previewScore}
-          formulaString={formulaString}
-        />
-  
-        <TaskTable
-          tasks={tasks}
-          dimensions={dimensions}
-          onDeleteTask={handleDeleteTask}
-          onEditTask={handleEditTask}
-          calculateImportance={calculateImportance}
-        />
-  
-        <SettingsModal
-          isOpen={isSettingsOpen}
-          onClose={() => setIsSettingsOpen(false)}
-          dimensions={dimensions}
-          onDimensionsChange={setDimensions}
-        />
-      </div>
-    );
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-6">
+      <h1 className="text-2xl font-bold text-center mb-8">
+        Decision Matrix Task Prioritizer
+      </h1>
 
+      <TaskInputForm
+        taskName={taskName}
+        onTaskNameChange={setTaskName}
+        dimensions={dimensions}
+        formValues={formValues}
+        onFormValueChange={setFormValues}
+        onSettingsOpen={() => setIsSettingsOpen(true)}
+        onSubmit={handleAddOrUpdateTask}
+        editingTaskId={editingTaskId}
+        previewScore={previewScore}
+        formulaString={formulaString}
+      />
+
+      <TaskTable
+        tasks={tasks}
+        dimensions={dimensions}
+        onDeleteTask={handleDeleteTask}
+        onEditTask={handleEditTask}
+        onCompleteTask={handleCompleteTask}
+        calculateImportance={calculateImportance}
+        editingTaskId={editingTaskId}
+      />
+
+      <TaskArchive
+        tasks={completedTasks}
+        dimensions={dimensions}
+        onDeleteTask={handleDeleteCompletedTask}
+        onRestoreTask={handleRestoreTask}
+        calculateImportance={calculateImportance}
+      />
+
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        dimensions={dimensions}
+        onDimensionsChange={setDimensions}
+      />
+    </div>
+  );
 }

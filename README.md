@@ -13,3 +13,13 @@ This separation helps you make better decisions by focusing on one thing at a ti
 npm install
 npm run dev
 ```
+
+## Bugs / TODO
+* make responsive
+* add user storage / login
+* Summarize task history
+    * visualize completed tasks (score vs time)
+    * show total score
+* add an optional deadline to tasks
+* export to csv and excel / sheets
+* Make public profiles 

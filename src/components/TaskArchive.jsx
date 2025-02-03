@@ -1,0 +1,100 @@
+import React, { useState } from 'react';
+import { Trash2, RefreshCw } from 'lucide-react';
+import { ConfirmationModal } from './ConfirmationModal';
+import { DimensionScore, ImportanceScore } from './ScoreDisplay';
+
+export function TaskArchive({ 
+  tasks, 
+  dimensions, 
+  onDeleteTask,
+  onRestoreTask,
+  calculateImportance 
+}) {
+  const [deleteTask, setDeleteTask] = useState(null);
+
+  if (tasks.length === 0) return null;
+
+  const handleConfirmDelete = () => {
+    if (deleteTask !== null) {
+      onDeleteTask(deleteTask);
+      setDeleteTask(null);
+    }
+  };
+
+  return (
+    <div className="mt-8">
+      <h2 className="text-xl font-semibold mb-4">Completed Tasks</h2>
+      <div className="w-full overflow-x-auto rounded-lg shadow bg-white">
+        <table className="w-full min-w-[768px]">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-4 py-2 text-left font-medium text-gray-700 w-48">Task Name</th>
+              {dimensions.map(dim => (
+                <th key={dim.name} className="px-4 py-2 text-center font-medium text-gray-700 w-32">
+                  {dim.label}
+                </th>
+              ))}
+              <th className="px-4 py-2 text-center font-medium text-gray-700 w-24">Score</th>
+              <th className="px-4 py-2 text-center font-medium text-gray-700 w-32">Created</th>
+              <th className="px-4 py-2 text-center font-medium text-gray-700 w-32">Completed</th>
+              <th className="px-4 py-2 text-center font-medium text-gray-700 w-24">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-600 divide-y divide-gray-200">
+            {tasks.map((task, index) => (
+              <tr key={task.id} className="hover:bg-gray-50">
+                <td className="px-4 py-2 truncate">{task.name}</td>
+                {dimensions.map(dim => (
+                  <td key={dim.name} className="px-4 py-2 text-center">
+                    <DimensionScore 
+                      rawScore={task[dim.name]} 
+                      weight={dim.weight}
+                    />
+                  </td>
+                ))}
+                <td className="px-4 py-2 text-center">
+                  <ImportanceScore 
+                    task={task}
+                    dimensions={dimensions}
+                  />
+                </td>
+                <td className="px-4 py-2 text-center text-sm" title={new Date(task.createdAt).toLocaleString()}>
+                  {new Date(task.createdAt).toLocaleDateString()}
+                </td>
+                <td className="px-4 py-2 text-center text-sm" title={new Date(task.completedAt).toLocaleString()}>
+                  {new Date(task.completedAt).toLocaleDateString()}
+                </td>
+                <td className="px-4 py-2">
+                  <div className="flex justify-center gap-2">
+                    <button
+                      onClick={() => onRestoreTask(task)}
+                      className="p-1 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                      title="Restore Task"
+                    >
+                      <RefreshCw size={18} />
+                    </button>
+                    <button
+                      onClick={() => setDeleteTask(index)}
+                      className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors"
+                      title="Delete"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <ConfirmationModal
+        isOpen={deleteTask !== null}
+        onClose={() => setDeleteTask(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Task"
+        message="Are you sure you want to delete this task? This action cannot be undone."
+      />
+    </div>
+  );
+}

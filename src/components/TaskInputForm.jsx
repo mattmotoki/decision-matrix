@@ -14,18 +14,16 @@ export function TaskInputForm({
   previewScore,
   formulaString
 }) {
-  const handleSliderChange = (dimension, value) => {
-    onFormValueChange({
-      ...formValues,
-      [dimension]: value
-    });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit();
   };
 
   return (
-    <div className="input-card">
-      <div className="flex justify-between items-start mb-4">
-        <div className="input-group flex-1">
-          <label htmlFor="taskName" className="input-label">
+    <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-4 md:p-6 mb-6">
+      <div className="flex flex-col md:flex-row md:items-start gap-4 mb-6">
+        <div className="flex-1">
+          <label htmlFor="taskName" className="block font-medium mb-1">
             Task Name:
           </label>
           <input
@@ -33,20 +31,21 @@ export function TaskInputForm({
             id="taskName"
             value={taskName}
             onChange={(e) => onTaskNameChange(e.target.value)}
-            className="text-input"
+            className="w-full px-3 py-2 border rounded-md"
             placeholder="Enter task name"
           />
         </div>
         <button
+          type="button"
           onClick={onSettingsOpen}
-          className="ml-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full"
+          className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full self-start"
           title="Settings"
         >
           <Settings size={20} />
         </button>
       </div>
 
-      <div className="grid gap-2 mb-4">
+      <div className="space-y-4 mb-6">
         {dimensions.map(dim => (
           <SliderWithControls
             key={dim.name}
@@ -54,22 +53,23 @@ export function TaskInputForm({
             label={dim.label}
             weight={dim.weight}
             value={formValues[dim.name]}
-            onChange={(value) => handleSliderChange(dim.name, value)}
+            onChange={(value) => onFormValueChange({ ...formValues, [dim.name]: value })}
           />
         ))}
       </div>
 
-      <div className="button-row">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <button
-          onClick={onSubmit}
-          className="add-button"
+          type="submit"
+          className="w-full md:w-auto px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
         >
           {editingTaskId ? 'Update Task' : 'Add Task'}
         </button>
-        <div className="preview-score">
-          Score Preview: <span className="preview-score-value">{previewScore}</span> = {formulaString}
+        <div className="text-gray-600 text-center md:text-left">
+          Score Preview: <span className="font-medium">{previewScore}</span>
+          <span className="text-sm text-gray-500 ml-2">({formulaString})</span>
         </div>
       </div>
-    </div>
+    </form>
   );
 }
