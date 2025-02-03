@@ -31,7 +31,10 @@ export function TaskArchive({
               <th className="px-4 py-2 text-left font-medium text-gray-700 w-48">Task Name</th>
               <th className="px-4 py-2 text-center font-medium text-gray-700 w-32">Date Created</th>
               {dimensions.map(dim => (
-                <th key={dim.name} className="px-4 py-2 text-center font-medium text-gray-700 w-32">
+                <th key={dim.name}
+                  className="px-4 py-2 text-center font-medium text-gray-700 w-32"
+                  title={dim.description}
+                >
                   {dim.label}
                 </th>
               ))}

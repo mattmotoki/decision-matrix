@@ -5,17 +5,21 @@ import { ChevronUp, ChevronDown } from 'lucide-react';
 export function SliderWithControls({
   name,
   label,
-  value=5,
+  description,
+  value,
   weight,
   onChange,
   min = 0,
   max = 10
 }) {
-
   return (
     <div className="flex flex-col md:flex-row md:items-center gap-2">
-      {/* Label */}
-      <label htmlFor={name} className="w-full md:w-60 flex justify-between items-center">
+      {/* Label with tooltip */}
+      <label 
+        htmlFor={name} 
+        className="w-full md:w-60 flex justify-between items-center"
+        title={description}
+      >
         <span className="font-medium">{label}</span>
         <span className="text-sm text-gray-500 ml-2">(×{weight})</span>
       </label>

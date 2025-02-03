@@ -7,12 +7,14 @@ import { useTasks } from './shared/hooks/useTasks';
 import { calculateImportance, createFormValues, formatFormulaString } from './utils/taskUtils';
 import './App.css';
 
+
 const initialDimensions = [
-  { name: 'easiness', label: 'Easiness', weight: 1 },
-  { name: 'urgency', label: 'Urgency', weight: 3 },
-  { name: 'monetaryBenefit', label: 'Monetary Benefit', weight: 2 },
-  { name: 'personalDevelopment', label: 'Personal Development', weight: 1 }
+  { name: 'easiness', label: 'Easiness', weight: 1, description: "How quickly and easily this can be completed." },
+  { name: 'urgency', label: 'Urgency', weight: 3, description: "How time-sensitive or deadline-driven the task is." },
+  { name: 'financialGain', label: 'Financial Gain', weight: 2, description: "Expected monetary return or business value." },
+  { name: 'personalGrowth', label: 'Personal Growth', weight: 1, description: "Opportunity for learning and skill development." }
 ];
+
 
 export function App() {
   // State management
