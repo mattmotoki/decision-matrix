@@ -1,10 +1,11 @@
+// components/SliderWithControls.jsx
 import React from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 
 export function SliderWithControls({
   name,
   label,
-  value,
+  value=5,
   weight,
   onChange,
   min = 0,

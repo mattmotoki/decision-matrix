@@ -1,3 +1,4 @@
+// components/SettingsModal.jsx
 import React, { useState } from 'react';
 import { Plus, X } from 'lucide-react';
 

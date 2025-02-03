@@ -3,6 +3,8 @@ import { TaskInputForm } from './components/TaskInputForm';
 import { SettingsModal } from './components/SettingsModal';
 import { TaskTable } from './components/TaskTable';
 import { TaskArchive } from './components/TaskArchive';
+import { useTasks } from './shared/hooks/useTasks';
+import { calculateImportance, createFormValues, formatFormulaString } from './utils/taskUtils';
 import './App.css';
 
 const initialDimensions = [
@@ -13,24 +15,37 @@ const initialDimensions = [
 ];
 
 export function App() {
+  // State management
   const [dimensions, setDimensions] = useState(initialDimensions);
-  const [tasks, setTasks] = useState([]);
-  const [completedTasks, setCompletedTasks] = useState([]);
-  const [formValues, setFormValues] = useState(
-    Object.fromEntries(dimensions.map(dim => [dim.name, 5]))
-  );
   const [taskName, setTaskName] = useState('');
+  const [formValues, setFormValues] = useState(createFormValues(dimensions));
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [editingTaskId, setEditingTaskId] = useState(null);
+  
+  // Custom hook for task management
+  const {
+    tasks,
+    completedTasks,
+    editingTaskId,
+    setEditingTaskId,
+    addTask,
+    updateTask,
+    completeTask,
+    deleteTask,
+    deleteCompletedTask,
+    restoreTask
+  } = useTasks(dimensions);
 
+  // Update form values when dimensions change
   useEffect(() => {
     setFormValues(prev => {
       const newValues = { ...prev };
+      // Add new dimensions with default value
       dimensions.forEach(dim => {
         if (!(dim.name in newValues)) {
           newValues[dim.name] = 5;
         }
       });
+      // Remove dimensions that no longer exist
       Object.keys(newValues).forEach(key => {
         if (!dimensions.some(dim => dim.name === key)) {
           delete newValues[key];
@@ -38,58 +53,26 @@ export function App() {
       });
       return newValues;
     });
-
-    setTasks(prev => prev.map(task => {
-      const updatedTask = { ...task };
-      dimensions.forEach(dim => {
-        if (!(dim.name in updatedTask)) {
-          updatedTask[dim.name] = 0;
-        }
-      });
-      return updatedTask;
-    }));
   }, [dimensions]);
-
-  const calculateImportance = (task) => {
-    return dimensions.reduce((sum, dim) => {
-      return sum + (task[dim.name] * dim.weight);
-    }, 0);
-  };
-
-  const sortTasks = (tasksToSort) => {
-    return [...tasksToSort].sort((a, b) => calculateImportance(b) - calculateImportance(a));
-  };
 
   const handleAddOrUpdateTask = () => {
     const finalTaskName = taskName.trim() || 'UNNAMED TASK';
-
+    
     if (editingTaskId) {
-      const originalTask = tasks.find(task => task.id === editingTaskId);
-      setTasks(prev => sortTasks(
-        prev.map(task =>
-          task.id === editingTaskId
-            ? {
-              ...task,
-              name: finalTaskName,
-              ...formValues,
-              createdAt: originalTask.createdAt
-            }
-            : task
-        )
-      ));
-      setEditingTaskId(null);
-    } else {
-      const newTask = {
-        id: Date.now(),
+      updateTask(editingTaskId, {
         name: finalTaskName,
-        createdAt: new Date().toISOString(),
         ...formValues
-      };
-      setTasks(prev => sortTasks([...prev, newTask]));
+      });
+    } else {
+      addTask({
+        name: finalTaskName,
+        ...formValues
+      });
     }
 
+    // Reset form
     setTaskName('');
-    setFormValues(Object.fromEntries(dimensions.map(dim => [dim.name, 5])));
+    setFormValues(createFormValues(dimensions));
   };
 
   const handleEditTask = (task) => {
@@ -102,46 +85,14 @@ export function App() {
     );
   };
 
-  const handleCompleteTask = (task) => {
-    setTasks(prev => prev.filter(t => t.id !== task.id));
-    const completedTask = {
-      ...task,
-      completedAt: new Date().toISOString()
-    };
-    setCompletedTasks(prev => [completedTask, ...prev]);
-  };
-
-  const handleDeleteTask = (index) => {
-    setTasks(prev => {
-      const newTasks = [...prev];
-      newTasks.splice(index, 1);
-      return newTasks;
-    });
-  };
-
-  const handleDeleteCompletedTask = (index) => {
-    setCompletedTasks(prev => {
-      const newTasks = [...prev];
-      newTasks.splice(index, 1);
-      return newTasks;
-    });
-  };
-
-  const handleRestoreTask = (task) => {
-    const { completedAt, ...restoredTask } = task;
-    setTasks(prev => sortTasks([...prev, restoredTask]));
-    setCompletedTasks(prev => prev.filter(t => t.id !== task.id));
-  };
-
-  const previewScore = calculateImportance(formValues);
-  const formulaString = dimensions
-    .map(dim => `${dim.weight}×${formValues[dim.name]}`)
-    .join(' + ');
+  // Calculate preview score and formula string
+  const previewScore = calculateImportance(formValues, dimensions);
+  const formulaString = formatFormulaString(dimensions, formValues);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
       <h1 className="text-2xl font-bold text-center mb-8">
-        Decision Matrix Task Prioritizer
+        Decision Matrix – Task Prioritizer
       </h1>
 
       <TaskInputForm
@@ -160,17 +111,17 @@ export function App() {
       <TaskTable
         tasks={tasks}
         dimensions={dimensions}
-        onDeleteTask={handleDeleteTask}
+        onDeleteTask={deleteTask}
         onEditTask={handleEditTask}
-        onCompleteTask={handleCompleteTask}
+        onCompleteTask={completeTask}
         editingTaskId={editingTaskId}
       />
 
       <TaskArchive
         tasks={completedTasks}
         dimensions={dimensions}
-        onDeleteTask={handleDeleteCompletedTask}
-        onRestoreTask={handleRestoreTask}
+        onDeleteTask={deleteCompletedTask}
+        onRestoreTask={restoreTask}
       />
 
       <SettingsModal

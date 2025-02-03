@@ -15,11 +15,9 @@ npm run dev
 ```
 
 ## Bugs / TODO
-* make responsive
-* add user storage / login
+* add user storage / login / profiles
 * Summarize task history
     * visualize completed tasks (score vs time)
     * show total score
 * add an optional deadline to tasks
 * export to csv and excel / sheets
-* Make public profiles 

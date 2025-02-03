@@ -1,7 +1,8 @@
+// components/ScoreDisplay.jsx
 import React from 'react';
 
-export function DimensionScore({ rawScore, weight }) {
-  const weightedScore = rawScore * weight;
+export function DimensionScore({ rawScore = 0, weight }) {
+  const weightedScore = (rawScore || 0) * weight;
   return (
     <div
       className="inline-flex items-center"
@@ -15,9 +16,9 @@ export function DimensionScore({ rawScore, weight }) {
 export function ImportanceScore({ task, dimensions }) {
   const calculations = dimensions.map(dim => ({
     label: dim.label,
-    rawScore: task[dim.name],
+    rawScore: typeof task[dim.name] === 'number' ? task[dim.name] : 0,
     weight: dim.weight,
-    weightedScore: task[dim.name] * dim.weight
+    weightedScore: (typeof task[dim.name] === 'number' ? task[dim.name] : 0) * dim.weight
   }));
 
   const totalScore = calculations.reduce((sum, calc) => sum + calc.weightedScore, 0);
@@ -31,7 +32,7 @@ export function ImportanceScore({ task, dimensions }) {
       className="font-medium"
       title={`Total Score = ${totalScore} (${formulaString})`}
     >
-      {totalScore}
+      {totalScore.toString()}
     </div>
   );
 }
