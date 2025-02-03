@@ -67,7 +67,7 @@ export function SettingsModal({ isOpen, onClose, dimensions, onDimensionsChange 
   return (
     <div className="fixed inset-0 z-50">
       <div className="absolute inset-0 bg-black/30" onClick={onClose} />
-      
+
       <div className="absolute inset-4 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-full sm:max-w-2xl">
         <div className="relative bg-white rounded-lg shadow-lg flex flex-col max-h-[calc(100vh-2rem)]">
           {/* Header */}
@@ -97,7 +97,17 @@ export function SettingsModal({ isOpen, onClose, dimensions, onDimensionsChange 
                     placeholder="Enter dimension name"
                   />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-5 gap-4">
+                  <div className="col-span-4">
+                    <label className="block text-sm font-medium mb-1">Description</label>
+                    <input
+                      type="text"
+                      value={newDimensionDescription}
+                      onChange={(e) => setNewDimensionDescription(e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md"
+                      placeholder="Enter dimension description"
+                    />
+                  </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">Weight</label>
                     <input
@@ -107,16 +117,6 @@ export function SettingsModal({ isOpen, onClose, dimensions, onDimensionsChange 
                       value={newDimensionWeight}
                       onChange={(e) => setNewDimensionWeight(Number(e.target.value))}
                       className="w-full px-3 py-2 border rounded-md"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Description</label>
-                    <input
-                      type="text"
-                      value={newDimensionDescription}
-                      onChange={(e) => setNewDimensionDescription(e.target.value)}
-                      className="w-full px-3 py-2 border rounded-md"
-                      placeholder="Enter dimension description"
                     />
                   </div>
                 </div>

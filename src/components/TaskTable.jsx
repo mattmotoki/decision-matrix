@@ -100,7 +100,7 @@ export function TaskTable({
               <tr>
                 <td
                   colSpan={dimensions.length + 4}
-                  className="px-4 py-8 text-center text-gray-500"
+                  className="px-4 py-6 text-center text-gray-500"
                 >
                   {editingTaskId ? 'Editing task...' : 'No active tasks'}
                 </td>

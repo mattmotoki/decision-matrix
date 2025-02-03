@@ -17,7 +17,7 @@ export function SliderWithControls({
       {/* Label with tooltip */}
       <label 
         htmlFor={name} 
-        className="w-full md:w-60 flex justify-between items-center"
+        className="w-full md:w-50 flex justify-between items-center"
         title={description}
       >
         <span className="font-medium">{label}</span>
