@@ -14,7 +14,7 @@ export function SettingsModal({ isOpen, onClose, dimensions, onDimensionsChange 
     }
 
     const dimensionKey = newDimensionName.toLowerCase().replace(/\s+/g, '');
-    
+
     if (dimensions.some(dim => dim.name === dimensionKey)) {
       alert('A dimension with this name already exists.');
       return;
@@ -37,8 +37,8 @@ export function SettingsModal({ isOpen, onClose, dimensions, onDimensionsChange 
 
   const handleWeightChange = (dimensionName, newWeight) => {
     onDimensionsChange(
-      dimensions.map(dim => 
-        dim.name === dimensionName 
+      dimensions.map(dim =>
+        dim.name === dimensionName
           ? { ...dim, weight: Number(newWeight) }
           : dim
       )
@@ -57,11 +57,11 @@ export function SettingsModal({ isOpen, onClose, dimensions, onDimensionsChange 
             <X size={20} />
           </button>
         </div>
-        
+
         <div className="p-4 overflow-y-auto">
           <div className="mb-6 bg-white rounded-lg">
             <h3 className="text-lg font-semibold mb-4">Manage Dimensions</h3>
-            
+
             <div className="space-y-4">
               <div className="flex gap-4 items-end">
                 <div className="flex-1">

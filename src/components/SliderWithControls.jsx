@@ -1,51 +1,41 @@
 import React from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 
-export function SliderWithControls({ 
+export function SliderWithControls({
   name,
-  label, 
+  label,
   value,
   weight,
   onChange,
   min = 0,
   max = 10
 }) {
-  const weightedScore = value * weight;
-  const percentage = ((value - min) / (max - min)) * 100;
 
   return (
     <div className="flex flex-col md:flex-row md:items-center gap-2">
+      {/* Label */}
       <label htmlFor={name} className="w-full md:w-60 flex justify-between items-center">
         <span className="font-medium">{label}</span>
         <span className="text-sm text-gray-500 ml-2">(×{weight})</span>
       </label>
       <div className="flex-1 flex items-center gap-2">
-        <div className="flex-1 relative pt-6">
-          {/* Value label */}
-          <div 
-            className="absolute top-0 text-sm text-gray-600 transform -translate-x-1/2 tabular-nums"
-            style={{ left: `${percentage}%` }}
-          >
-            {value}
-          </div>
-
-          {/* Slider input */}
-          <input
-            type="range"
-            min={min}
-            max={max}
-            value={value}
-            onChange={(e) => onChange(parseInt(e.target.value))}
-            id={name}
-            className="w-full"
-          />
-        </div>
-
+        {/* Slider input */}
+        <input
+          type="range"
+          min={min}
+          max={max}
+          value={value}
+          onChange={(e) => onChange(parseInt(e.target.value))}
+          id={name}
+          className="w-full"
+        />
         {/* Score display */}
-        <span className="w-12 text-center tabular-nums text-gray-600">
-          {weightedScore}
+        <span
+          className="w-12 text-center tabular-nums text-gray-600"
+          title={`Score: ${value * weight} = ${value}×${weight}`}
+        >
+          {value}
         </span>
-
         {/* Value controls */}
         <div className="flex flex-col">
           <button

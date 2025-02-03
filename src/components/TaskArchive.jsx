@@ -3,12 +3,11 @@ import { Trash2, RefreshCw } from 'lucide-react';
 import { ConfirmationModal } from './ConfirmationModal';
 import { DimensionScore, ImportanceScore } from './ScoreDisplay';
 
-export function TaskArchive({ 
-  tasks, 
-  dimensions, 
+export function TaskArchive({
+  tasks,
+  dimensions,
   onDeleteTask,
   onRestoreTask,
-  calculateImportance 
 }) {
   const [deleteTask, setDeleteTask] = useState(null);
 
@@ -26,17 +25,17 @@ export function TaskArchive({
       <h2 className="text-xl font-semibold mb-4">Completed Tasks</h2>
       <div className="w-full overflow-x-auto rounded-lg shadow bg-white">
         <table className="w-full min-w-[768px]">
-          <thead className="bg-gray-50">
+          <thead className="bg-gray-100">
             <tr>
               <th className="px-4 py-2 text-left font-medium text-gray-700 w-48">Task Name</th>
+              <th className="px-4 py-2 text-center font-medium text-gray-700 w-32">Date Created</th>
               {dimensions.map(dim => (
                 <th key={dim.name} className="px-4 py-2 text-center font-medium text-gray-700 w-32">
                   {dim.label}
                 </th>
               ))}
               <th className="px-4 py-2 text-center font-medium text-gray-700 w-24">Score</th>
-              <th className="px-4 py-2 text-center font-medium text-gray-700 w-32">Created</th>
-              <th className="px-4 py-2 text-center font-medium text-gray-700 w-32">Completed</th>
+              <th className="px-4 py-2 text-center font-medium text-gray-700 w-32">Date Completed</th>
               <th className="px-4 py-2 text-center font-medium text-gray-700 w-24">Actions</th>
             </tr>
           </thead>
@@ -44,22 +43,22 @@ export function TaskArchive({
             {tasks.map((task, index) => (
               <tr key={task.id} className="hover:bg-gray-50">
                 <td className="px-4 py-2 truncate">{task.name}</td>
+                <td className="px-4 py-2 text-center text-sm" title={new Date(task.createdAt).toLocaleString()}>
+                  {new Date(task.createdAt).toLocaleDateString()}
+                </td>
                 {dimensions.map(dim => (
                   <td key={dim.name} className="px-4 py-2 text-center">
-                    <DimensionScore 
-                      rawScore={task[dim.name]} 
+                    <DimensionScore
+                      rawScore={task[dim.name]}
                       weight={dim.weight}
                     />
                   </td>
                 ))}
                 <td className="px-4 py-2 text-center">
-                  <ImportanceScore 
+                  <ImportanceScore
                     task={task}
                     dimensions={dimensions}
                   />
-                </td>
-                <td className="px-4 py-2 text-center text-sm" title={new Date(task.createdAt).toLocaleString()}>
-                  {new Date(task.createdAt).toLocaleDateString()}
                 </td>
                 <td className="px-4 py-2 text-center text-sm" title={new Date(task.completedAt).toLocaleString()}>
                   {new Date(task.completedAt).toLocaleDateString()}
@@ -68,14 +67,14 @@ export function TaskArchive({
                   <div className="flex justify-center gap-2">
                     <button
                       onClick={() => onRestoreTask(task)}
-                      className="p-1 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                      className="p-1 text-blue-600 hover:bg-blue-50 rounded transition-colors cursor-pointer"
                       title="Restore Task"
                     >
                       <RefreshCw size={18} />
                     </button>
                     <button
                       onClick={() => setDeleteTask(index)}
-                      className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors"
+                      className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors cursor-pointer"
                       title="Delete"
                     >
                       <Trash2 size={18} />

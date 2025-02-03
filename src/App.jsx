@@ -61,8 +61,8 @@ export function App() {
   };
 
   const handleAddOrUpdateTask = () => {
-    const finalTaskName = taskName.trim() || 'unnamed';
-    
+    const finalTaskName = taskName.trim() || 'UNNAMED TASK';
+
     if (editingTaskId) {
       const originalTask = tasks.find(task => task.id === editingTaskId);
       setTasks(prev => sortTasks(
@@ -163,7 +163,6 @@ export function App() {
         onDeleteTask={handleDeleteTask}
         onEditTask={handleEditTask}
         onCompleteTask={handleCompleteTask}
-        calculateImportance={calculateImportance}
         editingTaskId={editingTaskId}
       />
 
@@ -172,7 +171,6 @@ export function App() {
         dimensions={dimensions}
         onDeleteTask={handleDeleteCompletedTask}
         onRestoreTask={handleRestoreTask}
-        calculateImportance={calculateImportance}
       />
 
       <SettingsModal

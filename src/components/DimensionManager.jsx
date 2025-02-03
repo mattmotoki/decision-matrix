@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, X } from 'lucide-react';
 
+
 export function DimensionManager({ dimensions, onDimensionsChange }) {
   const [newDimensionName, setNewDimensionName] = useState('');
   const [newDimensionWeight, setNewDimensionWeight] = useState(1);
@@ -12,7 +13,7 @@ export function DimensionManager({ dimensions, onDimensionsChange }) {
     }
 
     const dimensionKey = newDimensionName.toLowerCase().replace(/\s+/g, '');
-    
+
     if (dimensions.some(dim => dim.name === dimensionKey)) {
       alert('A dimension with this name already exists.');
       return;
@@ -35,8 +36,8 @@ export function DimensionManager({ dimensions, onDimensionsChange }) {
 
   const handleWeightChange = (dimensionName, newWeight) => {
     onDimensionsChange(
-      dimensions.map(dim => 
-        dim.name === dimensionName 
+      dimensions.map(dim =>
+        dim.name === dimensionName
           ? { ...dim, weight: Number(newWeight) }
           : dim
       )
@@ -46,7 +47,7 @@ export function DimensionManager({ dimensions, onDimensionsChange }) {
   return (
     <div className="mb-6 bg-white rounded-lg shadow p-4">
       <h2 className="text-lg font-semibold mb-4">Manage Dimensions</h2>
-      
+
       <div className="space-y-4">
         <div className="flex gap-4 items-end">
           <div className="flex-1">

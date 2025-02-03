@@ -1,10 +1,10 @@
 import React from 'react';
 import { X } from 'lucide-react';
 
-export function ConfirmationModal({ 
-  isOpen, 
-  onClose, 
-  onConfirm, 
+export function ConfirmationModal({
+  isOpen,
+  onClose,
+  onConfirm,
   title = 'Confirm Action',
   message = 'Are you sure you want to proceed?'
 }) {
@@ -23,9 +23,9 @@ export function ConfirmationModal({
             <X size={20} />
           </button>
         </div>
-        
+
         <p className="text-gray-600 mb-6">{message}</p>
-        
+
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
