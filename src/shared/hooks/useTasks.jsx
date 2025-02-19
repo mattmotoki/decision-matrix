@@ -2,10 +2,32 @@
 import { useState, useEffect } from 'react';
 import { sortTasksByImportance } from '../../utils/taskUtils';
 
+const STORAGE_KEYS = {
+  ACTIVE_TASKS: 'decision-matrix-tasks',
+  COMPLETED_TASKS: 'decision-matrix-completed-tasks'
+};
+
 export function useTasks(dimensions) {
-  const [tasks, setTasks] = useState([]);
-  const [completedTasks, setCompletedTasks] = useState([]);
+  const [tasks, setTasks] = useState(() => {
+    const savedTasks = localStorage.getItem(STORAGE_KEYS.ACTIVE_TASKS);
+    return savedTasks ? JSON.parse(savedTasks) : [];
+  });
+  
+  const [completedTasks, setCompletedTasks] = useState(() => {
+    const savedCompletedTasks = localStorage.getItem(STORAGE_KEYS.COMPLETED_TASKS);
+    return savedCompletedTasks ? JSON.parse(savedCompletedTasks) : [];
+  });
+  
   const [editingTaskId, setEditingTaskId] = useState(null);
+
+  // Save tasks to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.ACTIVE_TASKS, JSON.stringify(tasks));
+  }, [tasks]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.COMPLETED_TASKS, JSON.stringify(completedTasks));
+  }, [completedTasks]);
 
   const updateTasksWithNewDimension = (tasks) => {
     return tasks.map(task => {
