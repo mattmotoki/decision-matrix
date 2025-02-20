@@ -9,7 +9,7 @@ export function TaskArchive({
   dimensions,
   onDeleteTask,
   onRestoreTask,
-  showRawScores
+  showWeightedScores
 }) {
   const [deleteTask, setDeleteTask] = useState(null);
 
@@ -38,7 +38,7 @@ export function TaskArchive({
                   title={dim.description}
                 >
                   {dim.label}
-                  {!showRawScores && <span className="text-xs text-gray-500 ml-1">(×{dim.weight})</span>}
+                  {!showWeightedScores && <span className="text-xs text-gray-500 ml-1">(×{dim.weight})</span>}
                 </th>
               ))}
               <th className="px-4 py-2 text-center font-medium text-gray-700 w-24">Total Score</th>
@@ -58,7 +58,7 @@ export function TaskArchive({
                     <DimensionScore
                       rawScore={task[dim.name]}
                       weight={dim.weight}
-                      showRawScores={showRawScores}
+                      showWeightedScores={showWeightedScores}
                     />
                   </td>
                 ))}
@@ -66,7 +66,7 @@ export function TaskArchive({
                   <ImportanceScore
                     task={task}
                     dimensions={dimensions}
-                    showRawScores={showRawScores}
+                    showWeightedScores={showWeightedScores}
                   />
                 </td>
                 <td className="px-4 py-2 text-center text-sm" title={new Date(task.completedAt).toLocaleString()}>

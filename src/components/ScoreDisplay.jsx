@@ -1,9 +1,9 @@
 // components/ScoreDisplay.jsx
 import React from 'react';
 
-export function DimensionScore({ rawScore = 0, weight, showRawScores = false }) {
+export function DimensionScore({ rawScore = 0, weight, showWeightedScores = true }) {
   const weightedScore = (rawScore || 0) * weight;
-  const displayScore = showRawScores ? rawScore : weightedScore;
+  const displayScore = showWeightedScores ? weightedScore : rawScore;
   
   return (
     <div
