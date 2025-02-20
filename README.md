@@ -30,11 +30,16 @@ npm run dev
     * clean up mobile styling
     * sort rows by header selection
     * add option to hide task columns
+    * table hover effects don't extend to low score tasks
+    * update the styling of thecompleted task table
 * UX improvements
     * make it easier to modify the dimension weights via the header row
     * consider making edit a modal
     * send task reminders
-* refactor dimension manager
+    * double click on task cell to edit
+    * make task actions less redundants
+    * sort rows by column values
+    * 
 * create subdimensions for tasks
     * create tree view
 

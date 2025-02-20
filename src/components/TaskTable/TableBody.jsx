@@ -28,7 +28,7 @@ export function TableBody({
               </th>
             ))}
             <th className="px-4 py-2 text-center font-medium text-white w-24">Total Score</th>
-            <th className="px-4 py-2 text-center font-medium text-white w-24">Actions</th>
+            <th className="px-4 py-2 text-center font-medium text-white w-24">More Options</th>
           </tr>
         </thead>
         <tbody className="text-gray-600 divide-y divide-gray-200">

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
-export function ExportMenu({ tasks, dimensions }) {
+export function DownloadMenu({ tasks, dimensions }) {
   const [showDownloadMenu, setShowDownloadMenu] = useState(false);
   const downloadButtonRef = useRef(null);
   const downloadMenuRef = useRef(null);
@@ -96,13 +96,13 @@ export function ExportMenu({ tasks, dimensions }) {
 
     XLSX.utils.book_append_sheet(wb, wsTask, 'Tasks');
 
-    const dateStr = new Date().toISOString().split('T')[0];
-    XLSX.writeFile(wb, `tasks-export-${dateStr}.xlsx`);
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    XLSX.writeFile(wb, `tasks-export-${timestamp}.xlsx`);
     setShowDownloadMenu(false);
   };
 
   const downloadFile = (content, type, filename) => {
-    const dateStr = new Date().toISOString().split('T')[0];
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const mimeTypes = {
       csv: 'text/csv;charset=utf-8;'
     };
@@ -111,7 +111,7 @@ export function ExportMenu({ tasks, dimensions }) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${filename}-${dateStr}.${type}`;
+    a.download = `${filename}-${timestamp}.${type}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

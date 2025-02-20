@@ -1,7 +1,8 @@
-import React from 'react';
-import { Edit, Trash2, CheckCircle } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { MoreHorizontal } from 'lucide-react';
 import { DimensionScore } from '../DimensionManager';
 import { calculateImportance, getScoreColor } from '../../utils/taskUtils';
+import { ContextMenu } from './ContextMenu';
 
 export function TaskRow({
   task,
@@ -13,9 +14,23 @@ export function TaskRow({
   index,
   className = ''
 }) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+  const menuRef = useRef(null);
+
   const totalScore = calculateImportance(task, dimensions);
   const maxPossibleScore = dimensions.reduce((sum, dim) => sum + (5 * dim.weight), 0);
   const scoreColorClass = getScoreColor(totalScore, maxPossibleScore, true);
+
+  const handleOpenMenu = (event) => {
+    event.preventDefault();
+    const rect = event.currentTarget.getBoundingClientRect();
+    setMenuPosition({
+      x: rect.left - 100, // Position menu to the left of the button
+      y: rect.top + window.scrollY + rect.height + 4 // Position below the button with a small gap
+    });
+    setIsMenuOpen(true);
+  };
 
   return (
     <tr className={`group divide-x divide-gray-200 ${className}`}>
@@ -42,28 +57,23 @@ export function TaskRow({
         {totalScore}
       </td>
       <td className={`px-4 py-2 ${scoreColorClass}`}>
-        <div className="flex justify-center gap-2">
+        <div className="flex justify-center">
           <button
-            onClick={() => onComplete(task)}
-            className="p-1 text-green-600 hover:bg-green-50 rounded transition-colors cursor-pointer"
-            title="Complete Task"
+            onClick={handleOpenMenu}
+            className="p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <CheckCircle size={18} />
+            <MoreHorizontal size={16} />
           </button>
-          <button
-            onClick={() => onEdit(task)}
-            className="p-1 text-blue-600 hover:bg-blue-50 rounded transition-colors cursor-pointer"
-            title="Edit"
-          >
-            <Edit size={18} />
-          </button>
-          <button
-            onClick={() => onDelete(index)}
-            className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors cursor-pointer"
-            title="Delete"
-          >
-            <Trash2 size={18} />
-          </button>
+          <ContextMenu
+            isOpen={isMenuOpen}
+            setIsOpen={setIsMenuOpen}
+            task={task}
+            onEdit={onEdit}
+            onDelete={() => onDelete(index)}
+            onComplete={onComplete}
+            position={menuPosition}
+            menuRef={menuRef}
+          />
         </div>
       </td>
     </tr>
