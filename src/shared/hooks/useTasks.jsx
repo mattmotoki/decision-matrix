@@ -4,7 +4,8 @@ import { sortTasksByImportance } from '../../utils/taskUtils';
 
 const STORAGE_KEYS = {
   ACTIVE_TASKS: 'decision-matrix-tasks',
-  COMPLETED_TASKS: 'decision-matrix-completed-tasks'
+  COMPLETED_TASKS: 'decision-matrix-completed-tasks',
+  SHOW_WEIGHTED_SCORES: 'decision-matrix-show-weighted-scores'
 };
 
 export function useTasks(dimensions) {
@@ -20,14 +21,12 @@ export function useTasks(dimensions) {
   
   const [editingTaskId, setEditingTaskId] = useState(null);
 
-  // Save tasks to localStorage whenever they change
-  useEffect(() => {
+  // Remove auto-save effects
+  const saveToLocalStorage = (showWeightedScores) => {
     localStorage.setItem(STORAGE_KEYS.ACTIVE_TASKS, JSON.stringify(tasks));
-  }, [tasks]);
-
-  useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.COMPLETED_TASKS, JSON.stringify(completedTasks));
-  }, [completedTasks]);
+    localStorage.setItem(STORAGE_KEYS.SHOW_WEIGHTED_SCORES, JSON.stringify(showWeightedScores));
+  };
 
   const updateTasksWithNewDimension = (tasks) => {
     return tasks.map(task => {
@@ -116,6 +115,9 @@ export function useTasks(dimensions) {
     completeTask,
     deleteTask,
     deleteCompletedTask,
-    restoreTask
+    restoreTask,
+    saveToLocalStorage,
+    setTasks,
+    setCompletedTasks
   };
 }

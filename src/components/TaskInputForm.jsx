@@ -1,7 +1,7 @@
 // components/TaskInputForm.jsx
 import React from 'react';
 import { Settings } from 'lucide-react';
-import { SliderWithControls } from './SliderWithControls';
+import { DimensionSlider } from './DimensionManager';
 
 export function TaskInputForm({
   taskName,
@@ -47,7 +47,7 @@ export function TaskInputForm({
 
         <div className="space-y-4 mb-6">
           {dimensions.map(dim => (
-            <SliderWithControls
+            <DimensionSlider
               key={dim.name}
               name={dim.name}
               label={dim.label}

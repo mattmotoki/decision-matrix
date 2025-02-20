@@ -1,6 +1,6 @@
 import React from 'react';
 import { Edit, Trash2, CheckCircle } from 'lucide-react';
-import { DimensionScore } from '../ScoreDisplay';
+import { DimensionScore } from '../DimensionManager';
 import { calculateImportance, getScoreColor } from '../../utils/taskUtils';
 
 export function TaskRow({
