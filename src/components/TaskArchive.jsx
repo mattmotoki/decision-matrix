@@ -9,6 +9,7 @@ export function TaskArchive({
   dimensions,
   onDeleteTask,
   onRestoreTask,
+  showRawScores
 }) {
   const [deleteTask, setDeleteTask] = useState(null);
 
@@ -31,14 +32,16 @@ export function TaskArchive({
               <th className="px-4 py-2 text-left font-medium text-gray-700 w-48">Task Name</th>
               <th className="px-4 py-2 text-center font-medium text-gray-700 w-32">Date Created</th>
               {dimensions.map(dim => (
-                <th key={dim.name}
+                <th 
+                  key={dim.name}
                   className="px-4 py-2 text-center font-medium text-gray-700 w-32"
                   title={dim.description}
                 >
                   {dim.label}
+                  {!showRawScores && <span className="text-xs text-gray-500 ml-1">(×{dim.weight})</span>}
                 </th>
               ))}
-              <th className="px-4 py-2 text-center font-medium text-gray-700 w-24">Score</th>
+              <th className="px-4 py-2 text-center font-medium text-gray-700 w-24">Total Score</th>
               <th className="px-4 py-2 text-center font-medium text-gray-700 w-32">Date Completed</th>
               <th className="px-4 py-2 text-center font-medium text-gray-700 w-24">Actions</th>
             </tr>
@@ -55,6 +58,7 @@ export function TaskArchive({
                     <DimensionScore
                       rawScore={task[dim.name]}
                       weight={dim.weight}
+                      showRawScores={showRawScores}
                     />
                   </td>
                 ))}
@@ -62,6 +66,7 @@ export function TaskArchive({
                   <ImportanceScore
                     task={task}
                     dimensions={dimensions}
+                    showRawScores={showRawScores}
                   />
                 </td>
                 <td className="px-4 py-2 text-center text-sm" title={new Date(task.completedAt).toLocaleString()}>

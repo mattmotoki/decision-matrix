@@ -10,7 +10,9 @@ export function TaskTable({
   onDeleteTask,
   onEditTask,
   onCompleteTask,
-  editingTaskId
+  editingTaskId,
+  showRawScores,
+  onToggleRawScores
 }) {
   const [deleteTaskIndex, setDeleteTaskIndex] = useState(null);
 
@@ -25,7 +27,18 @@ export function TaskTable({
 
   return (
     <div className="mt-8">
-      <h2 className="text-xl font-semibold mb-4">Tasks in Progress</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-semibold">Tasks in Progress</h2>
+        <label className="inline-flex items-center gap-2">
+          <span className="text-sm text-gray-600">Show raw scores</span>
+          <input
+            type="checkbox"
+            checked={showRawScores}
+            onChange={(e) => onToggleRawScores(e.target.checked)}
+            className="form-checkbox h-4 w-4 text-blue-500"
+          />
+        </label>
+      </div>
       <div className="w-full overflow-x-auto rounded-lg shadow bg-white">
         <table className="w-full min-w-[768px]">
           <thead className="bg-gray-100">
@@ -39,9 +52,10 @@ export function TaskTable({
                   title={dim.description}
                 >
                   {dim.label}
+                  {!showRawScores && <span className="text-xs text-gray-500 ml-1">(×{dim.weight})</span>}
                 </th>
               ))}
-              <th className="px-4 py-2 text-center font-medium text-gray-700 w-24">Score</th>
+              <th className="px-4 py-2 text-center font-medium text-gray-700 w-24">Total Score</th>
               <th className="px-4 py-2 text-center font-medium text-gray-700 w-24">Actions</th>
             </tr>
           </thead>
@@ -60,6 +74,7 @@ export function TaskTable({
                     <DimensionScore
                       rawScore={task[dim.name]}
                       weight={dim.weight}
+                      showRawScores={showRawScores}
                     />
                   </td>
                 ))}
@@ -67,6 +82,7 @@ export function TaskTable({
                   <ImportanceScore
                     task={task}
                     dimensions={dimensions}
+                    showRawScores={showRawScores}
                   />
                 </td>
                 <td className="px-4 py-2">

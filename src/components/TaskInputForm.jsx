@@ -23,7 +23,7 @@ export function TaskInputForm({
   return (
     <div className="mt-8">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">Add New Priority Task</h2>
+        <h2 className="text-xl font-semibold">Add New Task</h2>
         <button
           type="button"
           onClick={onSettingsOpen}

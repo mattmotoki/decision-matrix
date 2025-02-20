@@ -1,14 +1,16 @@
 // components/ScoreDisplay.jsx
 import React from 'react';
 
-export function DimensionScore({ rawScore = 0, weight }) {
+export function DimensionScore({ rawScore = 0, weight, showRawScores = false }) {
   const weightedScore = (rawScore || 0) * weight;
+  const displayScore = showRawScores ? rawScore : weightedScore;
+  
   return (
     <div
       className="inline-flex items-center"
       title={`${rawScore}×${weight} = ${weightedScore}`}
     >
-      <span className="font-sm">{weightedScore}</span>
+      <span className="font-sm">{displayScore}</span>
     </div>
   );
 }
