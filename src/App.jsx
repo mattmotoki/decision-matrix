@@ -24,7 +24,10 @@ export function App() {
   const [taskName, setTaskName] = useState('');
   const [formValues, setFormValues] = useState(createFormValues(dimensions));
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [showWeightedScores, setShowWeightedScores] = useState(true);
+  const [showWeightedScores, setShowWeightedScores] = useState(() => {
+    const saved = localStorage.getItem('decision-matrix-show-weighted-scores');
+    return saved ? JSON.parse(saved) : true;
+  });
   
   // Custom hook for task management
   const {
@@ -37,7 +40,8 @@ export function App() {
     completeTask,
     deleteTask,
     deleteCompletedTask,
-    restoreTask
+    restoreTask,
+    saveToLocalStorage
   } = useTasks(dimensions);
 
   // Update form values when dimensions change
@@ -96,7 +100,7 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <Navbar onSave={() => saveToLocalStorage(showWeightedScores)} />
       <div className="max-w-7xl mx-auto px-4 py-6">
         
         <TaskInputForm
