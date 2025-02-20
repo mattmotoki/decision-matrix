@@ -10,7 +10,7 @@ export function SliderWithControls({
   weight,
   onChange,
   min = 0,
-  max = 10
+  max = 5
 }) {
   return (
     <div className="flex flex-col md:flex-row md:items-center gap-2">

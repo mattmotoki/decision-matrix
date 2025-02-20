@@ -12,7 +12,7 @@ export const sortTasksByImportance = (tasks, dimensions) => {
   );
 };
 
-export const createFormValues = (dimensions, defaultValue = 5) => {
+export const createFormValues = (dimensions, defaultValue = 0) => {
   return Object.fromEntries(dimensions.map(dim => [dim.name, defaultValue]));
 };
 

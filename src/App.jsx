@@ -45,7 +45,7 @@ export function App() {
       // Add new dimensions with default value
       dimensions.forEach(dim => {
         if (!(dim.name in newValues)) {
-          newValues[dim.name] = 5;
+          newValues[dim.name] = 0;
         }
       });
       // Remove dimensions that no longer exist
