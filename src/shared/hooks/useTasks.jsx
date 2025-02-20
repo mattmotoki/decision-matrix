@@ -116,6 +116,8 @@ export function useTasks(dimensions) {
     deleteTask,
     deleteCompletedTask,
     restoreTask,
-    saveToLocalStorage
+    saveToLocalStorage,
+    setTasks,
+    setCompletedTasks
   };
 }

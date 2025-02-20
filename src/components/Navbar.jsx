@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Logo } from './Logo';
 
-const Navbar = ({ onSave, tasks, completedTasks, dimensions }) => {
+const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const menuRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -59,8 +60,7 @@ const Navbar = ({ onSave, tasks, completedTasks, dimensions }) => {
         createdAt: task.createdAt,
         scores: Object.fromEntries(
           dimensions.map(dim => [dim.name, task[dim.name]])
-        ),
-        totalScore: dimensions.reduce((sum, dim) => sum + (task[dim.name] * dim.weight), 0)
+        )
       })),
       completedTasks: completedTasks.map(task => ({
         id: task.id,
@@ -69,8 +69,7 @@ const Navbar = ({ onSave, tasks, completedTasks, dimensions }) => {
         completedAt: task.completedAt,
         scores: Object.fromEntries(
           dimensions.map(dim => [dim.name, task[dim.name]])
-        ),
-        totalScore: dimensions.reduce((sum, dim) => sum + (task[dim.name] * dim.weight), 0)
+        )
       }))
     };
 
@@ -85,6 +84,71 @@ const Navbar = ({ onSave, tasks, completedTasks, dimensions }) => {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     setIsMenuOpen(false);
+  };
+
+  const validateImportData = (data) => {
+    // Check basic structure
+    if (!data || typeof data !== 'object') throw new Error('Invalid file format');
+    if (!data.dimensions || !Array.isArray(data.dimensions)) throw new Error('Missing or invalid dimensions');
+    if (!data.activeTasks || !Array.isArray(data.activeTasks)) throw new Error('Missing or invalid active tasks');
+    if (!data.completedTasks || !Array.isArray(data.completedTasks)) throw new Error('Missing or invalid completed tasks');
+
+    // Validate dimensions
+    const validDimension = (dim) => (
+      dim.name && typeof dim.name === 'string' &&
+      dim.label && typeof dim.label === 'string' &&
+      dim.weight && typeof dim.weight === 'number' &&
+      dim.description && typeof dim.description === 'string'
+    );
+    if (!data.dimensions.every(validDimension)) {
+      throw new Error('Invalid dimension format');
+    }
+
+    // Validate tasks
+    const validTask = (task) => (
+      task.id && typeof task.id === 'number' &&
+      task.name && typeof task.name === 'string' &&
+      task.createdAt && typeof task.createdAt === 'string' &&
+      task.scores && typeof task.scores === 'object'
+    );
+    
+    const validCompletedTask = (task) => (
+      validTask(task) &&
+      task.completedAt && typeof task.completedAt === 'string'
+    );
+
+    if (!data.activeTasks.every(validTask)) {
+      throw new Error('Invalid active task format');
+    }
+    if (!data.completedTasks.every(validCompletedTask)) {
+      throw new Error('Invalid completed task format');
+    }
+
+    return true;
+  };
+
+  const handleImport = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      
+      if (validateImportData(data)) {
+        onImport(data);
+        setIsMenuOpen(false);
+        setShowSuccess(true);
+        setTimeout(() => setShowSuccess(false), 1500);
+      }
+    } catch (error) {
+      alert(`Import failed: ${error.message}`);
+    } finally {
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
   };
 
   return (
@@ -153,12 +217,20 @@ const Navbar = ({ onSave, tasks, completedTasks, dimensions }) => {
                 >
                   Export
                 </button>
-                <button
-                  className="w-full text-left px-4 py-3 text-base text-teal-300 hover:bg-slate-800 hover:text-teal-200"
+                <label
+                  className="w-full text-left px-4 py-3 text-base text-teal-300 hover:bg-slate-800 hover:text-teal-200 cursor-pointer block"
                   role="menuitem"
+                  title="Import tasks and settings from a JSON file"
                 >
                   Import
-                </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".json"
+                    onChange={handleImport}
+                    className="hidden"
+                  />
+                </label>
               </div>
             </div>
           </div>
