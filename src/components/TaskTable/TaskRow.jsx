@@ -1,6 +1,7 @@
 import React from 'react';
 import { Edit, Trash2, CheckCircle } from 'lucide-react';
-import { DimensionScore, ImportanceScore } from '../ScoreDisplay';
+import { DimensionScore } from '../ScoreDisplay';
+import { calculateImportance, getScoreColor } from '../../utils/taskUtils';
 
 export function TaskRow({
   task,
@@ -11,32 +12,35 @@ export function TaskRow({
   onComplete,
   index
 }) {
+  const totalScore = calculateImportance(task, dimensions);
+  const maxPossibleScore = dimensions.reduce((sum, dim) => sum + (5 * dim.weight), 0);
+  const scoreColorClass = getScoreColor(totalScore, maxPossibleScore, true);
+
   return (
-    <tr className="hover:bg-gray-50">
-      <td className="px-4 py-2 truncate">{task.name}</td>
+    <tr className="group">
+      <td className="px-4 py-2 truncate group-hover:bg-gray-50">{task.name}</td>
       <td
-        className="px-4 py-2 text-center text-sm"
+        className="px-4 py-2 text-center text-sm group-hover:bg-gray-50"
         title={new Date(task.createdAt).toLocaleString()}
       >
         {new Date(task.createdAt).toLocaleDateString()}
       </td>
-      {dimensions.map(dim => (
-        <td key={dim.name} className="px-4 py-2 text-center">
-          <DimensionScore
-            rawScore={task[dim.name]}
-            weight={dim.weight}
-            showWeightedScores={showWeightedScores}
-          />
-        </td>
-      ))}
-      <td className="px-4 py-2 text-center">
-        <ImportanceScore
-          task={task}
-          dimensions={dimensions}
-          showWeightedScores={showWeightedScores}
-        />
+      {dimensions.map(dim => {
+        const dimensionScoreClass = getScoreColor(task[dim.name], 5, false);
+        return (
+          <td key={dim.name} className={`px-4 py-2 text-center ${dimensionScoreClass}`}>
+            <DimensionScore
+              rawScore={task[dim.name]}
+              weight={dim.weight}
+              showWeightedScores={showWeightedScores}
+            />
+          </td>
+        );
+      })}
+      <td className={`px-4 py-2 text-center font-medium ${scoreColorClass}`}>
+        {totalScore}
       </td>
-      <td className="px-4 py-2">
+      <td className="px-4 py-2 group-hover:bg-gray-50">
         <div className="flex justify-center gap-2">
           <button
             onClick={() => onComplete(task)}

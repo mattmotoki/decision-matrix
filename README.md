@@ -23,7 +23,7 @@ npm run dev
     * visualize completed tasks (score vs time)
     * show total score
 * add an optional deadline to tasks
-* export to json, csv, and excel / sheets
+* add collections
 * sort rows by header selection
 * add tags to tasks
 * add an optional description field to tasks
@@ -31,7 +31,6 @@ npm run dev
 * add option to hide columns
 * change score scale to 0-5
 * make it easier to modify the dimension weights via the header row
-* color code task cells
 * consider making edit a modal
 * subdimensions
 * create tree view
