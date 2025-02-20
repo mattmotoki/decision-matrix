@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Logo } from './Logo';
 
 const Navbar = ({ onSave }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -29,7 +30,8 @@ const Navbar = ({ onSave }) => {
     <nav className="bg-slate-900 shadow-md">
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20">
-          <div className="flex-shrink-0 flex items-center pl-0">
+          <div className="flex-shrink-0 flex items-center pl-0 gap-3">
+            <Logo className="h-8 w-8" />
             <h1 className="text-2xl font-bold text-teal-300">Dotable – Task Prioritizer</h1>
           </div>
           
