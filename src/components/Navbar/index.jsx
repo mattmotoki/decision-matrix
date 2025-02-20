@@ -85,14 +85,14 @@ export const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions, sh
       }))
     };
 
-    const dateStr = new Date().toISOString().split('T')[0];
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     
     try {
       const a = document.createElement('a');
       a.href = url;
-      a.download = `dotable-export-${dateStr}.json`;
+      a.download = `dotable-export-${timestamp}.json`;
       document.body.appendChild(a);
       a.click();
     } finally {
