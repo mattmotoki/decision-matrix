@@ -27,23 +27,23 @@ export function TaskArchive({
       <h2 className="text-xl font-semibold mb-4">Completed Tasks</h2>
       <div className="w-full overflow-x-auto rounded-lg shadow bg-white">
         <table className="w-full min-w-[768px]">
-          <thead className="bg-gray-100">
+          <thead className="bg-slate-700 text-white">
             <tr>
-              <th className="px-4 py-2 text-left font-medium text-gray-700 w-48">Task Name</th>
-              <th className="px-4 py-2 text-center font-medium text-gray-700 w-32">Date Created</th>
+              <th className="px-4 py-2 text-left font-medium w-48">Task Name</th>
+              <th className="px-4 py-2 text-center font-medium w-32">Date Created</th>
               {dimensions.map(dim => (
                 <th 
                   key={dim.name}
-                  className="px-4 py-2 text-center font-medium text-gray-700 w-32"
+                  className="px-4 py-2 text-center font-medium w-32"
                   title={dim.description}
                 >
                   {dim.label}
-                  {!showWeightedScores && <span className="text-xs text-gray-500 ml-1">(×{dim.weight})</span>}
+                  {!showWeightedScores && <span className="text-xs text-teal-300 ml-1">(×{dim.weight})</span>}
                 </th>
               ))}
-              <th className="px-4 py-2 text-center font-medium text-gray-700 w-24">Total Score</th>
-              <th className="px-4 py-2 text-center font-medium text-gray-700 w-32">Date Completed</th>
-              <th className="px-4 py-2 text-center font-medium text-gray-700 w-24">Actions</th>
+              <th className="px-4 py-2 text-center font-medium w-24">Total Score</th>
+              <th className="px-4 py-2 text-center font-medium w-32">Date Completed</th>
+              <th className="px-4 py-2 text-center font-medium w-24">More Options</th>
             </tr>
           </thead>
           <tbody className="text-gray-600 divide-y divide-gray-200">

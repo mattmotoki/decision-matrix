@@ -55,6 +55,19 @@ export function validateImportData(data) {
     if (isCompleted && (!task.completedAt || isNaN(Date.parse(task.completedAt)))) {
       throw new Error('Invalid task completion date');
     }
+    // Optional fields validation
+    if (task.description && typeof task.description !== 'string') {
+      throw new Error('Invalid task description');
+    }
+    if (task.deadline && isNaN(Date.parse(task.deadline))) {
+      throw new Error('Invalid task deadline');
+    }
+    if (task.tags && !Array.isArray(task.tags)) {
+      throw new Error('Invalid task tags');
+    }
+    if (task.tags && !task.tags.every(tag => typeof tag === 'string')) {
+      throw new Error('Invalid tag format');
+    }
   };
 
   data.activeTasks.forEach(task => validateTask(task));

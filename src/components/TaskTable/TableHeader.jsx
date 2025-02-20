@@ -2,6 +2,6 @@ import React from 'react';
 
 export function TableHeader() {
   return (
-    <h2 className="text-xl font-semibold">Tasks in Progress</h2>
+    <h2 className="text-xl font-semibold">Active Tasks</h2>
   );
 } 

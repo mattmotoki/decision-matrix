@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const STORAGE_KEY = 'decision-matrix-dimensions';
 
@@ -15,9 +15,10 @@ export function useDimensions() {
     return savedDimensions ? JSON.parse(savedDimensions) : initialDimensions;
   });
 
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(dimensions));
-  }, [dimensions]);
+  const updateDimensions = (newDimensions) => {
+    setDimensions(newDimensions);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newDimensions));
+  };
 
-  return [dimensions, setDimensions];
+  return [dimensions, updateDimensions];
 } 

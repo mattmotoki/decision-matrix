@@ -19,7 +19,7 @@ export function DimensionSlider({
         className="w-full md:w-50 flex justify-between items-center"
         title={description}
       >
-        <span className="font-medium text-gray-900">{label}</span>
+        <span className="font-sm text-gray-900">{label}</span>
         <span className="text-sm text-gray-500 ml-2">(×{weight})</span>
       </label>
       <div className="flex-1 flex items-center gap-2">
