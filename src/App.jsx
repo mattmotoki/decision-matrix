@@ -41,7 +41,9 @@ export function App() {
     deleteTask,
     deleteCompletedTask,
     restoreTask,
-    saveToLocalStorage
+    saveToLocalStorage,
+    setTasks,
+    setCompletedTasks
   } = useTasks(dimensions);
 
   // Update form values when dimensions change
@@ -98,6 +100,40 @@ export function App() {
   const previewScore = calculateImportance(formValues, dimensions);
   const formulaString = formatFormulaString(dimensions, formValues);
 
+  const handleImport = (data) => {
+    // Update dimensions first
+    setDimensions(data.dimensions);
+    
+    // Update tasks with the new scores format
+    const processTask = (task) => ({
+      id: task.id,
+      name: task.name,
+      createdAt: task.createdAt,
+      // Ensure all dimensions have values
+      ...Object.fromEntries(data.dimensions.map(dim => [dim.name, 0])), // Default values
+      ...task.scores, // Override with actual scores
+      ...(task.completedAt ? { completedAt: task.completedAt } : {})
+    });
+
+    // Set active and completed tasks
+    const activeTasks = data.activeTasks.map(processTask);
+    const completedTasks = data.completedTasks.map(processTask);
+    
+    // Update tasks state
+    setTasks(activeTasks);
+    setCompletedTasks(completedTasks);
+    
+    // Update settings
+    if (data.settings?.showWeightedScores !== undefined) {
+      setShowWeightedScores(data.settings.showWeightedScores);
+    }
+    
+    // Reset form values to match new dimensions
+    setFormValues(createFormValues(data.dimensions));
+    setTaskName('');
+    setEditingTaskId(null);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar 
@@ -105,9 +141,11 @@ export function App() {
           saveToLocalStorage(showWeightedScores);
           return Promise.resolve();
         }}
+        onImport={handleImport}
         tasks={tasks}
         completedTasks={completedTasks}
         dimensions={dimensions}
+        showWeightedScores={showWeightedScores}
       />
       <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
         
