@@ -22,7 +22,7 @@ export function App() {
   const [taskName, setTaskName] = useState('');
   const [formValues, setFormValues] = useState(createFormValues(dimensions));
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [showRawScores, setShowRawScores] = useState(false);
+  const [showWeightedScores, setShowWeightedScores] = useState(true);
   
   // Custom hook for task management
   const {
@@ -118,8 +118,8 @@ export function App() {
         onEditTask={handleEditTask}
         onCompleteTask={completeTask}
         editingTaskId={editingTaskId}
-        showRawScores={showRawScores}
-        onToggleRawScores={(value) => setShowRawScores(value)}
+        showWeightedScores={showWeightedScores}
+        onToggleWeightedScores={(value) => setShowWeightedScores(value)}
       />
 
       <TaskArchive
@@ -127,7 +127,7 @@ export function App() {
         dimensions={dimensions}
         onDeleteTask={deleteCompletedTask}
         onRestoreTask={restoreTask}
-        showRawScores={showRawScores}
+        showWeightedScores={showWeightedScores}
       />
 
       <SettingsModal
