@@ -17,23 +17,26 @@ npm run dev
 ```
 
 ## Bugs / TODO
-* add user storage / login / profiles
-* store user data in a database
+* add user database storage / login / profiles
 * visualize task history
     * visualize completed tasks (score vs time)
     * show total score
-* add an optional deadline to tasks
-* add collections
-* sort rows by header selection
-* add tags to tasks
-* add an optional description field to tasks
-* add last modified date to tasks table
-* add option to hide columns
-* make it easier to modify the dimension weights via the header row
+* additional task variables
+    * optional tags
+    * optional deadline
+    * optional description
+    * last modified date
+* UI fixes
+    * clean up mobile styling
+    * sort rows by header selection
+    * add option to hide task columns
+* UX improvements
+    * make it easier to modify the dimension weights via the header row
+    * consider making edit a modal
+    * send task reminders
 * refactor dimension manager
-* consider making edit a modal
-* subdimensions
-* create tree view
-* send task reminders
+* create subdimensions for tasks
+    * create tree view
+
 
 

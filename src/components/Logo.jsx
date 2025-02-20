@@ -1,5 +1,5 @@
 import React from 'react';
-import favicon from '/public/favicon.svg';
+import favicon from '../assets/favicon.svg';
 
 export function Logo({ className }) {
   return (
