@@ -123,13 +123,15 @@ export function App() {
     setTasks(activeTasks);
     setCompletedTasks(completedTasks);
     
+    // Update settings
+    if (data.settings?.showWeightedScores !== undefined) {
+      setShowWeightedScores(data.settings.showWeightedScores);
+    }
+    
     // Reset form values to match new dimensions
     setFormValues(createFormValues(data.dimensions));
     setTaskName('');
     setEditingTaskId(null);
-    
-    // Save the imported state
-    saveToLocalStorage(showWeightedScores);
   };
 
   return (
@@ -143,6 +145,7 @@ export function App() {
         tasks={tasks}
         completedTasks={completedTasks}
         dimensions={dimensions}
+        showWeightedScores={showWeightedScores}
       />
       <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
         
