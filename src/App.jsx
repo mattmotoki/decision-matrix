@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { TaskInputForm } from './components/TaskInputForm';
-import { SettingsModal } from './components/SettingsModal';
 import { TaskTable } from './components/TaskTable';
 import { TaskArchive } from './components/TaskArchive';
-import Navbar from './components/Navbar';
+import { Navbar } from './components/Navbar';
+import { DimensionSettingsModal } from './components/DimensionManager';
 import { useTasks } from './shared/hooks/useTasks';
 import { useDimensions } from './shared/hooks/useDimensions';
 import { calculateImportance, createFormValues, formatFormulaString } from './utils/taskUtils';
@@ -181,7 +181,7 @@ export function App() {
           showWeightedScores={showWeightedScores}
         />
 
-        <SettingsModal
+        <DimensionSettingsModal
           isOpen={isSettingsOpen}
           onClose={() => setIsSettingsOpen(false)}
           dimensions={dimensions}

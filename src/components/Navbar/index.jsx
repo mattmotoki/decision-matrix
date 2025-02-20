@@ -5,7 +5,7 @@ import { MenuIcon } from './icons';
 import { Toast } from './Toast';
 import { DropdownMenu } from './DropdownMenu';
 
-const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions, showWeightedScores }) => {
+export const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions, showWeightedScores }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [showSaveSuccess, setShowSaveSuccess] = useState(false);
@@ -179,6 +179,4 @@ const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions, showWeigh
       {toast && <Toast message={toast} onHide={() => setToast(null)} />}
     </>
   );
-};
-
-export default Navbar; 
+}; 

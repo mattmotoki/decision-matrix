@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Trash2, RefreshCw } from 'lucide-react';
 import { ConfirmationModal } from './ConfirmationModal';
-import { DimensionScore, ImportanceScore } from './ScoreDisplay';
+import { DimensionScore, ImportanceScore } from './DimensionManager';
 
 export function TaskArchive({
   tasks,
