@@ -3,7 +3,9 @@ import { TaskInputForm } from './components/TaskInputForm';
 import { SettingsModal } from './components/SettingsModal';
 import { TaskTable } from './components/TaskTable';
 import { TaskArchive } from './components/TaskArchive';
+import Navbar from './components/Navbar';
 import { useTasks } from './shared/hooks/useTasks';
+import { useDimensions } from './shared/hooks/useDimensions';
 import { calculateImportance, createFormValues, formatFormulaString } from './utils/taskUtils';
 import './App.css';
 
@@ -18,7 +20,7 @@ const initialDimensions = [
 
 export function App() {
   // State management
-  const [dimensions, setDimensions] = useState(initialDimensions);
+  const [dimensions, setDimensions] = useDimensions();
   const [taskName, setTaskName] = useState('');
   const [formValues, setFormValues] = useState(createFormValues(dimensions));
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -93,49 +95,49 @@ export function App() {
   const formulaString = formatFormulaString(dimensions, formValues);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
-      <h1 className="text-2xl font-bold text-center mb-8">
-        Decision Matrix – Task Prioritizer
-      </h1>
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        
+        <TaskInputForm
+          taskName={taskName}
+          onTaskNameChange={setTaskName}
+          dimensions={dimensions}
+          formValues={formValues}
+          onFormValueChange={setFormValues}
+          onSettingsOpen={() => setIsSettingsOpen(true)}
+          onSubmit={handleAddOrUpdateTask}
+          editingTaskId={editingTaskId}
+          previewScore={previewScore}
+          formulaString={formulaString}
+        />
 
-      <TaskInputForm
-        taskName={taskName}
-        onTaskNameChange={setTaskName}
-        dimensions={dimensions}
-        formValues={formValues}
-        onFormValueChange={setFormValues}
-        onSettingsOpen={() => setIsSettingsOpen(true)}
-        onSubmit={handleAddOrUpdateTask}
-        editingTaskId={editingTaskId}
-        previewScore={previewScore}
-        formulaString={formulaString}
-      />
+        <TaskTable
+          tasks={tasks}
+          dimensions={dimensions}
+          onDeleteTask={deleteTask}
+          onEditTask={handleEditTask}
+          onCompleteTask={completeTask}
+          editingTaskId={editingTaskId}
+          showWeightedScores={showWeightedScores}
+          onToggleWeightedScores={(value) => setShowWeightedScores(value)}
+        />
 
-      <TaskTable
-        tasks={tasks}
-        dimensions={dimensions}
-        onDeleteTask={deleteTask}
-        onEditTask={handleEditTask}
-        onCompleteTask={completeTask}
-        editingTaskId={editingTaskId}
-        showWeightedScores={showWeightedScores}
-        onToggleWeightedScores={(value) => setShowWeightedScores(value)}
-      />
+        <TaskArchive
+          tasks={completedTasks}
+          dimensions={dimensions}
+          onDeleteTask={deleteCompletedTask}
+          onRestoreTask={restoreTask}
+          showWeightedScores={showWeightedScores}
+        />
 
-      <TaskArchive
-        tasks={completedTasks}
-        dimensions={dimensions}
-        onDeleteTask={deleteCompletedTask}
-        onRestoreTask={restoreTask}
-        showWeightedScores={showWeightedScores}
-      />
-
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        dimensions={dimensions}
-        onDimensionsChange={setDimensions}
-      />
+        <SettingsModal
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+          dimensions={dimensions}
+          onDimensionsChange={setDimensions}
+        />
+      </div>
     </div>
   );
 }

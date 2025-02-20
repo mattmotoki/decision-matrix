@@ -29,9 +29,8 @@ npm run dev
 * add an optional description field to tasks
 * add last modified date to tasks table
 * add option to hide columns
-* change score scale to 0-5
 * make it easier to modify the dimension weights via the header row
-* color code task cells
+* refactor dimension manager
 * consider making edit a modal
 * subdimensions
 * create tree view
