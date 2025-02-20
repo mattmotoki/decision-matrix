@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
-export function ExportMenu({ tasks, dimensions }) {
+export function DownloadMenu({ tasks, dimensions }) {
   const [showDownloadMenu, setShowDownloadMenu] = useState(false);
   const downloadButtonRef = useRef(null);
   const downloadMenuRef = useRef(null);
