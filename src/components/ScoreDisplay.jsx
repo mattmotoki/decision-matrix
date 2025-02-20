@@ -1,5 +1,6 @@
 // components/ScoreDisplay.jsx
 import React from 'react';
+import { getScoreColor } from '../utils/taskUtils';
 
 export function DimensionScore({ rawScore = 0, weight, showWeightedScores = true }) {
   const weightedScore = (rawScore || 0) * weight;
@@ -24,6 +25,7 @@ export function ImportanceScore({ task, dimensions }) {
   }));
 
   const totalScore = calculations.reduce((sum, calc) => sum + calc.weightedScore, 0);
+  const maxPossibleScore = dimensions.reduce((sum, dim) => sum + (5 * dim.weight), 0);
 
   const formulaString = calculations
     .map(calc => `${calc.rawScore}×${calc.weight}`)

@@ -23,7 +23,7 @@ npm run dev
     * visualize completed tasks (score vs time)
     * show total score
 * add an optional deadline to tasks
-* export to json, csv, and excel / sheets
+* add collections
 * sort rows by header selection
 * add tags to tasks
 * add an optional description field to tasks

@@ -27,25 +27,21 @@ export function TaskInputForm({
         <button
           type="button"
           onClick={onSettingsOpen}
-          className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full"
+          className="p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 rounded-full transition-colors"
           title="Manage Task Dimensions & Weights"
         >
           <Settings size={20} />
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-4 md:p-6 mb-6">
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow">
         <div className="mb-6">
-          <label htmlFor="taskName" className="block font-medium mb-1">
-            Task Name:
-          </label>
           <input
             type="text"
-            id="taskName"
             value={taskName}
             onChange={(e) => onTaskNameChange(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md"
-            placeholder="Enter task name"
+            placeholder="Enter task name..."
+            className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
           />
         </div>
 
@@ -54,26 +50,26 @@ export function TaskInputForm({
             <SliderWithControls
               key={dim.name}
               name={dim.name}
-              description={dim.description}
               label={dim.label}
-              weight={dim.weight}
+              description={dim.description}
               value={formValues[dim.name]}
+              weight={dim.weight}
               onChange={(value) => onFormValueChange({ ...formValues, [dim.name]: value })}
             />
           ))}
         </div>
 
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="flex items-center justify-between">
+          <div className="text-slate-600 text-base">
+            <span className="font-medium">Score Preview: {previewScore}</span>
+            <span className="text-base ml-1 text-slate-500"> ({formulaString})</span>
+          </div>
           <button
             type="submit"
-            className="w-full md:w-auto px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+            className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-colors"
           >
             {editingTaskId ? 'Update Task' : 'Add Task'}
           </button>
-          <div className="text-gray-600 text-center md:text-left">
-            Score Preview: <span className="font-medium">{previewScore}</span>
-            <span className="text-sm text-gray-500 ml-2">({formulaString})</span>
-          </div>
         </div>
       </form>
     </div>
