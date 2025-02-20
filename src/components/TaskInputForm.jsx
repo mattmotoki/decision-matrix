@@ -1,7 +1,7 @@
 // components/TaskInputForm.jsx
 import React from 'react';
 import { Settings } from 'lucide-react';
-import { DimensionSlider } from './DimensionManager';
+import { DimensionSlider } from './TaskManager';
 
 export function TaskInputForm({
   taskName,

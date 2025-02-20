@@ -33,13 +33,12 @@ npm run dev
     * table hover effects don't extend to low score tasks
     * update the styling of thecompleted task table
 * UX improvements
+    * sort rows by column values
     * make it easier to modify the dimension weights via the header row
     * consider making edit a modal
     * send task reminders
     * double click on task cell to edit
     * make task actions less redundants
-    * sort rows by column values
-    * 
 * create subdimensions for tasks
     * create tree view
 

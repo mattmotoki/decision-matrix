@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { MoreHorizontal } from 'lucide-react';
-import { DimensionScore } from '../DimensionManager';
+import { DimensionScore } from '../TaskManager';
 import { calculateImportance, getScoreColor } from '../../utils/taskUtils';
 import { ContextMenu } from './ContextMenu';
 
