@@ -19,36 +19,6 @@ export function ExportMenu({ tasks, dimensions }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleDownloadJSON = () => {
-    const data = {
-      metadata: {
-        exportDate: new Date().toISOString(),
-        totalTasks: tasks.length
-      },
-      dimensions: dimensions.map(dim => ({
-        name: dim.name,
-        label: dim.label,
-        weight: dim.weight,
-        description: dim.description
-      })),
-      tasks: tasks.map(task => ({
-        id: task.id,
-        name: task.name,
-        createdAt: task.createdAt,
-        dimensions: dimensions.map(dim => ({
-          name: dim.name,
-          label: dim.label,
-          weight: dim.weight,
-          rawScore: task[dim.name],
-          weightedScore: task[dim.name] * dim.weight
-        })),
-        totalScore: dimensions.reduce((sum, dim) => sum + (task[dim.name] * dim.weight), 0)
-      }))
-    };
-
-    downloadFile(JSON.stringify(data, null, 2), 'json', 'tasks-export');
-  };
-
   const handleDownloadCSV = (useWeightedScores = false) => {
     const scoreType = useWeightedScores ? 'weighted' : 'raw';
     
@@ -134,7 +104,6 @@ export function ExportMenu({ tasks, dimensions }) {
   const downloadFile = (content, type, filename) => {
     const dateStr = new Date().toISOString().split('T')[0];
     const mimeTypes = {
-      json: 'application/json',
       csv: 'text/csv;charset=utf-8;'
     };
 
@@ -166,29 +135,23 @@ export function ExportMenu({ tasks, dimensions }) {
           className="absolute left-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-10"
         >
           <button
-            onClick={handleDownloadJSON}
+            onClick={handleDownloadExcel}
             className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
           >
-            Download JSON
+            Excel Shreadsheet
+          </button>          
+          <button
+            onClick={() => handleDownloadCSV(true)}
+            className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+          >
+            CSV (Weighted Scores)
           </button>
           <button
             onClick={() => handleDownloadCSV(false)}
             className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
           >
-            Download CSV (Raw)
-          </button>
-          <button
-            onClick={() => handleDownloadCSV(true)}
-            className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
-          >
-            Download CSV (Weighted)
-          </button>
-          <button
-            onClick={handleDownloadExcel}
-            className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
-          >
-            Download Excel
-          </button>
+            CSV (Raw Values)
+          </button>          
         </div>
       )}
     </div>

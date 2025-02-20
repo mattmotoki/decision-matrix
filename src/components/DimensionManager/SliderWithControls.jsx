@@ -1,8 +1,7 @@
-// components/SliderWithControls.jsx
 import React from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 
-export function SliderWithControls({
+export function DimensionSlider({
   name,
   label,
   description,
@@ -94,6 +93,4 @@ export function SliderWithControls({
       </div>
     </div>
   );
-}
-
-export default SliderWithControls;
+} 
