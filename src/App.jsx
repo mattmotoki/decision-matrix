@@ -3,7 +3,7 @@ import { TaskInputForm } from './components/TaskInputForm';
 import { TaskTable } from './components/TaskTable';
 import { TaskArchive } from './components/TaskArchive';
 import { Navbar } from './components/Navbar';
-import { DimensionSettingsModal } from './components/DimensionManager';
+import { DimensionSettingsModal } from './components/TaskManager';
 import { useTasks } from './shared/hooks/useTasks';
 import { useDimensions } from './shared/hooks/useDimensions';
 import { calculateImportance, createFormValues, formatFormulaString } from './utils/taskUtils';
@@ -66,18 +66,20 @@ export function App() {
     });
   }, [dimensions]);
 
-  const handleAddOrUpdateTask = () => {
+  const handleAddOrUpdateTask = (optionalFields) => {
     const finalTaskName = taskName.trim() || 'UNNAMED TASK';
     
     if (editingTaskId) {
       updateTask(editingTaskId, {
         name: finalTaskName,
-        ...formValues
+        ...formValues,
+        ...optionalFields
       });
     } else {
       addTask({
         name: finalTaskName,
-        ...formValues
+        ...formValues,
+        ...optionalFields
       });
     }
 
@@ -94,6 +96,12 @@ export function App() {
         dimensions.map(dim => [dim.name, task[dim.name]])
       )
     );
+    // Pass the optional fields to the TaskInputForm
+    return {
+      description: task.description || '',
+      deadline: task.deadline || '',
+      tags: task.tags || []
+    };
   };
 
   // Calculate preview score and formula string
@@ -109,6 +117,9 @@ export function App() {
       id: task.id,
       name: task.name,
       createdAt: task.createdAt,
+      description: task.description,
+      deadline: task.deadline,
+      tags: task.tags || [],
       // Ensure all dimensions have values
       ...Object.fromEntries(data.dimensions.map(dim => [dim.name, 0])), // Default values
       ...task.scores, // Override with actual scores
@@ -160,6 +171,7 @@ export function App() {
           editingTaskId={editingTaskId}
           previewScore={previewScore}
           formulaString={formulaString}
+          task={editingTaskId ? tasks.find(t => t.id === editingTaskId) : null}
         />
 
         <TaskTable

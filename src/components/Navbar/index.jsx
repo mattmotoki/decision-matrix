@@ -70,6 +70,9 @@ export const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions, sh
         id: task.id,
         name: task.name,
         createdAt: task.createdAt,
+        description: task.description,
+        deadline: task.deadline,
+        tags: task.tags || [],
         scores: Object.fromEntries(
           dimensions.map(dim => [dim.name, task[dim.name]])
         )
@@ -79,6 +82,9 @@ export const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions, sh
         name: task.name,
         createdAt: task.createdAt,
         completedAt: task.completedAt,
+        description: task.description,
+        deadline: task.deadline,
+        tags: task.tags || [],
         scores: Object.fromEntries(
           dimensions.map(dim => [dim.name, task[dim.name]])
         )

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, X } from 'lucide-react';
 
-export function DimensionManager({ dimensions, onDimensionsChange }) {
+export function TaskManager({ dimensions, onDimensionsChange }) {
   const [newDimensionName, setNewDimensionName] = useState('');
   const [newDimensionWeight, setNewDimensionWeight] = useState(1);
   const [newDimensionDescription, setNewDimensionDescription] = useState('');
