@@ -3,6 +3,7 @@ import { TableHeader } from './TableHeader';
 import { TableActions } from './TableActions';
 import { TableBody } from './TableBody';
 import { ConfirmationModal } from '../ConfirmationModal';
+import { ExportMenu } from './ExportMenu';
 
 export function TaskTable({
   tasks,
@@ -27,12 +28,13 @@ export function TaskTable({
   return (
     <div className="mt-8">
       <div className="flex items-center justify-between mb-4">
-        <TableHeader />
+        <div className="flex items-center gap-3">
+          <TableHeader />
+          <ExportMenu tasks={visibleTasks} dimensions={dimensions} />
+        </div>
         <TableActions
           showWeightedScores={showWeightedScores}
           onToggleWeightedScores={onToggleWeightedScores}
-          tasks={visibleTasks}
-          dimensions={dimensions}
         />
       </div>
 

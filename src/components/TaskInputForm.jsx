@@ -27,7 +27,7 @@ export function TaskInputForm({
         <button
           type="button"
           onClick={onSettingsOpen}
-          className="p-2 text-gray-600 hover:text-gray-900 rounded-lg transition-colors"
+          className="p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 rounded-full transition-colors"
           title="Manage Task Dimensions & Weights"
         >
           <Settings size={20} />

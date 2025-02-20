@@ -155,7 +155,7 @@ export function ExportMenu({ tasks, dimensions }) {
       <button
         ref={downloadButtonRef}
         onClick={() => setShowDownloadMenu(!showDownloadMenu)}
-        className="p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors"
+        className="p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
         title="Download tasks"
       >
         <Download size={18} />
