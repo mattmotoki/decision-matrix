@@ -70,6 +70,9 @@ export const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions, sh
         id: task.id,
         name: task.name,
         createdAt: task.createdAt,
+        description: task.description,
+        deadline: task.deadline,
+        tags: task.tags || [],
         scores: Object.fromEntries(
           dimensions.map(dim => [dim.name, task[dim.name]])
         )
@@ -79,20 +82,23 @@ export const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions, sh
         name: task.name,
         createdAt: task.createdAt,
         completedAt: task.completedAt,
+        description: task.description,
+        deadline: task.deadline,
+        tags: task.tags || [],
         scores: Object.fromEntries(
           dimensions.map(dim => [dim.name, task[dim.name]])
         )
       }))
     };
 
-    const dateStr = new Date().toISOString().split('T')[0];
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     
     try {
       const a = document.createElement('a');
       a.href = url;
-      a.download = `dotable-export-${dateStr}.json`;
+      a.download = `dotable-export-${timestamp}.json`;
       document.body.appendChild(a);
       a.click();
     } finally {

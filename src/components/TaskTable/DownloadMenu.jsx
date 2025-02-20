@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
-export function ExportMenu({ tasks, dimensions }) {
+export function DownloadMenu({ tasks, dimensions }) {
   const [showDownloadMenu, setShowDownloadMenu] = useState(false);
   const downloadButtonRef = useRef(null);
   const downloadMenuRef = useRef(null);
@@ -22,14 +22,25 @@ export function ExportMenu({ tasks, dimensions }) {
   const handleDownloadCSV = (useWeightedScores = false) => {
     const scoreType = useWeightedScores ? 'weighted' : 'raw';
     
-    const headers = ['Name', 'Created At', ...dimensions.map(dim => {
-      const suffix = useWeightedScores ? ` (×${dim.weight})` : '';
-      return `${dim.label}${suffix}`;
-    }), 'Total Score'];
+    const headers = [
+      'Name',
+      'Created At',
+      'Description',
+      'Deadline',
+      'Tags',
+      ...dimensions.map(dim => {
+        const suffix = useWeightedScores ? ` (×${dim.weight})` : '';
+        return `${dim.label}${suffix}`;
+      }),
+      'Total Score'
+    ];
     
     const rows = tasks.map(task => [
       task.name,
       new Date(task.createdAt).toLocaleDateString(),
+      task.description || '',
+      task.deadline ? new Date(task.deadline).toLocaleDateString() : '',
+      (task.tags || []).join(', '),
       ...dimensions.map(dim => useWeightedScores ? (task[dim.name] * dim.weight) : task[dim.name]),
       dimensions.reduce((sum, dim) => sum + (task[dim.name] * dim.weight), 0)
     ]);
@@ -57,6 +68,9 @@ export function ExportMenu({ tasks, dimensions }) {
     const headers = [
       'Task Name',
       'Created At',
+      'Description',
+      'Deadline',
+      'Tags',
       ...dimensions.map(dim => `${dim.label} (Raw)`),
       ...dimensions.map(dim => `${dim.label} (Weighted)`),
       'Total Score'
@@ -65,6 +79,9 @@ export function ExportMenu({ tasks, dimensions }) {
     const taskRows = tasks.map(task => [
       task.name,
       new Date(task.createdAt).toLocaleDateString(),
+      task.description || '',
+      task.deadline ? new Date(task.deadline).toLocaleDateString() : '',
+      (task.tags || []).join(', '),
       ...dimensions.map(dim => task[dim.name])
     ]);
 
@@ -96,13 +113,13 @@ export function ExportMenu({ tasks, dimensions }) {
 
     XLSX.utils.book_append_sheet(wb, wsTask, 'Tasks');
 
-    const dateStr = new Date().toISOString().split('T')[0];
-    XLSX.writeFile(wb, `tasks-export-${dateStr}.xlsx`);
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    XLSX.writeFile(wb, `tasks-export-${timestamp}.xlsx`);
     setShowDownloadMenu(false);
   };
 
   const downloadFile = (content, type, filename) => {
-    const dateStr = new Date().toISOString().split('T')[0];
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const mimeTypes = {
       csv: 'text/csv;charset=utf-8;'
     };
@@ -111,7 +128,7 @@ export function ExportMenu({ tasks, dimensions }) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${filename}-${dateStr}.${type}`;
+    a.download = `${filename}-${timestamp}.${type}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

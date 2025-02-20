@@ -21,22 +21,21 @@ npm run dev
 * visualize task history
     * visualize completed tasks (score vs time)
     * show total score
-* additional task variables
-    * optional tags
-    * optional deadline
-    * optional description
+* additional task fields
     * last modified date
 * UI fixes
     * clean up mobile styling
-    * sort rows by header selection
-    * add option to hide task columns
 * UX improvements
+    * sort rows by column values
+    * add option to hide columns in the task table
     * make it easier to modify the dimension weights via the header row
     * consider making edit a modal
     * send task reminders
-* refactor dimension manager
+    * double click on task cell to edit
+    * make task actions less redundants
+    * add ctrl + s to save the task
 * create subdimensions for tasks
     * create tree view
-
-
-
+* bugs
+    * auto saves when adding a new dimension
+    * table hover effects don't extend to low score tasks

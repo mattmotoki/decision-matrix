@@ -1,6 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import { DimensionManager } from './Manager';
+import { TaskManager } from './Manager';
 
 export function DimensionSettingsModal({ isOpen, onClose, dimensions, onDimensionsChange }) {
   if (!isOpen) return null;
@@ -22,7 +22,7 @@ export function DimensionSettingsModal({ isOpen, onClose, dimensions, onDimensio
 
         {/* Content */}
         <div className="p-4 max-h-[calc(100vh-12rem)] overflow-y-auto">
-          <DimensionManager
+          <TaskManager
             dimensions={dimensions}
             onDimensionsChange={onDimensionsChange}
           />
