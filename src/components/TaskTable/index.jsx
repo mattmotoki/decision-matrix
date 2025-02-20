@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TableHeader } from './TableHeader';
-import { TableActions } from './TableActions';
+import { WeightedScoresToggle } from './WeightedScoresToggle';
 import { TableBody } from './TableBody';
 import { ConfirmationModal } from '../ConfirmationModal';
 import { ExportMenu } from './ExportMenu';
@@ -32,7 +32,7 @@ export function TaskTable({
           <TableHeader />
           <ExportMenu tasks={visibleTasks} dimensions={dimensions} />
         </div>
-        <TableActions
+        <WeightedScoresToggle
           showWeightedScores={showWeightedScores}
           onToggleWeightedScores={onToggleWeightedScores}
         />
