@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Logo } from './Logo';
 
-const Navbar = ({ onSave }) => {
+const Navbar = ({ onSave, tasks, completedTasks, dimensions }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -38,6 +38,53 @@ const Navbar = ({ onSave }) => {
       setShowSuccess(false);
       setIsMenuOpen(false);
     }, 1500);
+  };
+
+  const handleExport = () => {
+    const data = {
+      metadata: {
+        exportDate: new Date().toISOString(),
+        totalActiveTasks: tasks.length,
+        totalCompletedTasks: completedTasks.length
+      },
+      dimensions: dimensions.map(dim => ({
+        name: dim.name,
+        label: dim.label,
+        weight: dim.weight,
+        description: dim.description
+      })),
+      activeTasks: tasks.map(task => ({
+        id: task.id,
+        name: task.name,
+        createdAt: task.createdAt,
+        scores: Object.fromEntries(
+          dimensions.map(dim => [dim.name, task[dim.name]])
+        ),
+        totalScore: dimensions.reduce((sum, dim) => sum + (task[dim.name] * dim.weight), 0)
+      })),
+      completedTasks: completedTasks.map(task => ({
+        id: task.id,
+        name: task.name,
+        createdAt: task.createdAt,
+        completedAt: task.completedAt,
+        scores: Object.fromEntries(
+          dimensions.map(dim => [dim.name, task[dim.name]])
+        ),
+        totalScore: dimensions.reduce((sum, dim) => sum + (task[dim.name] * dim.weight), 0)
+      }))
+    };
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const dateStr = new Date().toISOString().split('T')[0];
+    a.href = url;
+    a.download = `dotable-export-${dateStr}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setIsMenuOpen(false);
   };
 
   return (
@@ -83,6 +130,7 @@ const Navbar = ({ onSave }) => {
                   disabled={isSaving}
                   className="w-full text-left px-4 py-3 text-base text-teal-300 hover:bg-slate-800 hover:text-teal-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-between"
                   role="menuitem"
+                  title="Save the current state of your tasks and settings"
                 >
                   <span>{isSaving ? 'Saving...' : 'Save'}</span>
                   {isSaving && (
@@ -98,8 +146,10 @@ const Navbar = ({ onSave }) => {
                   )}
                 </button>
                 <button
+                  onClick={handleExport}
                   className="w-full text-left px-4 py-3 text-base text-teal-300 hover:bg-slate-800 hover:text-teal-200"
                   role="menuitem"
+                  title="Export all tasks and settings as a JSON file"
                 >
                   Export
                 </button>
