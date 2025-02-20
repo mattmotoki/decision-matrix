@@ -123,9 +123,8 @@ export function SettingsModal({ isOpen, onClose, dimensions, onDimensionsChange 
                 <div>
                   <button
                     onClick={handleAddDimension}
-                    className="w-full md:w-auto px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 flex items-center gap-2 justify-center"
+                    className="w-full md:w-auto px-4 py-2 bg-teal-500 text-white rounded-md hover:bg-teal-600 flex items-center gap-2 justify-center"
                   >
-                    <Plus size={16} />
                     Add Dimension
                   </button>
                 </div>
@@ -180,7 +179,7 @@ export function SettingsModal({ isOpen, onClose, dimensions, onDimensionsChange 
           <div className="flex justify-end gap-2 p-4 border-t">
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
             >
               Close
             </button>

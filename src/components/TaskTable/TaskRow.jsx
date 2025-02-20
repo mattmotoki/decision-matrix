@@ -10,17 +10,18 @@ export function TaskRow({
   onDelete,
   onEdit,
   onComplete,
-  index
+  index,
+  className = ''
 }) {
   const totalScore = calculateImportance(task, dimensions);
   const maxPossibleScore = dimensions.reduce((sum, dim) => sum + (5 * dim.weight), 0);
   const scoreColorClass = getScoreColor(totalScore, maxPossibleScore, true);
 
   return (
-    <tr className="group">
-      <td className="px-4 py-2 truncate group-hover:bg-gray-50">{task.name}</td>
+    <tr className={`group divide-x divide-gray-200 ${className}`}>
+      <td className={`px-4 py-2 truncate ${scoreColorClass}`}>{task.name}</td>
       <td
-        className="px-4 py-2 text-center text-sm group-hover:bg-gray-50"
+        className={`px-4 py-2 text-center text-sm ${scoreColorClass}`}
         title={new Date(task.createdAt).toLocaleString()}
       >
         {new Date(task.createdAt).toLocaleDateString()}
@@ -40,7 +41,7 @@ export function TaskRow({
       <td className={`px-4 py-2 text-center font-medium ${scoreColorClass}`}>
         {totalScore}
       </td>
-      <td className="px-4 py-2 group-hover:bg-gray-50">
+      <td className={`px-4 py-2 ${scoreColorClass}`}>
         <div className="flex justify-center gap-2">
           <button
             onClick={() => onComplete(task)}

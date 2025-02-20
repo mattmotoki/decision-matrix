@@ -31,6 +31,7 @@ npm run dev
 * add option to hide columns
 * change score scale to 0-5
 * make it easier to modify the dimension weights via the header row
+* color code task cells
 * consider making edit a modal
 * subdimensions
 * create tree view
