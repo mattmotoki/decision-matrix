@@ -44,9 +44,11 @@ npm run dev
     * make task actions less redundants
     * add ctrl + s to save the task
     * clear local storage
+    * let the user rename the dimensions
 * bugs:
     * Saving twice withouth changing anything doesn't trigger the toast notification
     * Local storage auto saves when adding a new dimension
     * The task table hover effects don't extend to low score tasks; let's highlight the row by either darkening all the cells or by setting it to a constant color like gray for all the cells
     * The deadline value in the table does not agree with the input form (it is one day behind in the table)
-    
+    * White space on the right column of the Task Manager should be removed on mobile
+    * when a user clocks on the elipses of the more options twice, the app goes blank

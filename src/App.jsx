@@ -1,29 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { TaskInputForm } from './components/TaskInputForm';
+import React, { useState } from 'react';
+import { CreateTaskButton } from './components/TaskManager';
 import { TaskTable } from './components/TaskTable';
 import { TaskArchive } from './components/TaskArchive';
 import { Navbar } from './components/Navbar';
-import { DimensionSettingsModal } from './components/TaskManager';
+import { ControlPanel } from './components/ControlPanel';
 import { useTasks } from './shared/hooks/useTasks';
 import { useDimensions } from './shared/hooks/useDimensions';
 import { calculateImportance, createFormValues, formatFormulaString } from './utils/taskUtils';
 import './App.css';
 
 
-const initialDimensions = [
-  { name: 'easiness', label: 'Easiness', weight: 1, description: "How quickly and easily this can be completed." },
-  { name: 'urgency', label: 'Urgency', weight: 3, description: "How time-sensitive or deadline-driven the task is." },
-  { name: 'financialGain', label: 'Financial Gain', weight: 2, description: "Expected monetary return or business value." },
-  { name: 'personalGrowth', label: 'Personal Growth', weight: 1, description: "Opportunity for learning and skill development." }
-];
-
 
 export function App() {
   // State management
   const [dimensions, setDimensions] = useDimensions();
-  const [taskName, setTaskName] = useState('');
-  const [formValues, setFormValues] = useState(createFormValues(dimensions));
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [showWeightedScores, setShowWeightedScores] = useState(() => {
     const saved = localStorage.getItem('decision-matrix-show-weighted-scores');
     return saved ? JSON.parse(saved) : true;
@@ -46,67 +36,17 @@ export function App() {
     setCompletedTasks
   } = useTasks(dimensions);
 
-  // Update form values when dimensions change
-  useEffect(() => {
-    setFormValues(prev => {
-      const newValues = { ...prev };
-      // Add new dimensions with default value
-      dimensions.forEach(dim => {
-        if (!(dim.name in newValues)) {
-          newValues[dim.name] = 0;
-        }
-      });
-      // Remove dimensions that no longer exist
-      Object.keys(newValues).forEach(key => {
-        if (!dimensions.some(dim => dim.name === key)) {
-          delete newValues[key];
-        }
-      });
-      return newValues;
-    });
-  }, [dimensions]);
-
-  const handleAddOrUpdateTask = (optionalFields) => {
-    const finalTaskName = taskName.trim() || 'UNNAMED TASK';
-    
-    if (editingTaskId) {
-      updateTask(editingTaskId, {
-        name: finalTaskName,
-        ...formValues,
-        ...optionalFields
-      });
-    } else {
-      addTask({
-        name: finalTaskName,
-        ...formValues,
-        ...optionalFields
-      });
-    }
-
-    // Reset form
-    setTaskName('');
-    setFormValues(createFormValues(dimensions));
-  };
+  // Calculate preview score and formula string for task creation
+  const previewScore = calculateImportance(createFormValues(dimensions), dimensions);
+  const formulaString = formatFormulaString(dimensions, createFormValues(dimensions));
 
   const handleEditTask = (task) => {
-    setEditingTaskId(task.id);
-    setTaskName(task.name);
-    setFormValues(
-      Object.fromEntries(
-        dimensions.map(dim => [dim.name, task[dim.name]])
-      )
+    // We now only need to handle the actual task update
+    const updatedTasks = tasks.map(t => 
+      t.id === task.id ? { ...t, ...task } : t
     );
-    // Pass the optional fields to the TaskInputForm
-    return {
-      description: task.description || '',
-      deadline: task.deadline || '',
-      tags: task.tags || []
-    };
+    setTasks(updatedTasks);
   };
-
-  // Calculate preview score and formula string
-  const previewScore = calculateImportance(formValues, dimensions);
-  const formulaString = formatFormulaString(dimensions, formValues);
 
   const handleImport = (data) => {
     // Update dimensions first
@@ -145,6 +85,63 @@ export function App() {
     setEditingTaskId(null);
   };
 
+  const handleExport = () => {
+    const data = {
+      metadata: {
+        exportDate: new Date().toISOString(),
+        totalActiveTasks: tasks.length,
+        totalCompletedTasks: completedTasks.length
+      },
+      settings: {
+        showWeightedScores
+      },
+      dimensions: dimensions.map(dim => ({
+        name: dim.name,
+        label: dim.label,
+        weight: dim.weight,
+        description: dim.description
+      })),
+      activeTasks: tasks.map(task => ({
+        id: task.id,
+        name: task.name,
+        createdAt: task.createdAt,
+        description: task.description,
+        deadline: task.deadline,
+        tags: task.tags || [],
+        scores: Object.fromEntries(
+          dimensions.map(dim => [dim.name, task[dim.name]])
+        )
+      })),
+      completedTasks: completedTasks.map(task => ({
+        id: task.id,
+        name: task.name,
+        createdAt: task.createdAt,
+        completedAt: task.completedAt,
+        description: task.description,
+        deadline: task.deadline,
+        tags: task.tags || [],
+        scores: Object.fromEntries(
+          dimensions.map(dim => [dim.name, task[dim.name]])
+        )
+      }))
+    };
+
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    try {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `2dotable-template-${timestamp}.json`;
+      document.body.appendChild(a);
+      a.click();
+    } finally {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar 
@@ -153,6 +150,7 @@ export function App() {
           return Promise.resolve();
         }}
         onImport={handleImport}
+        onExport={handleExport}
         tasks={tasks}
         completedTasks={completedTasks}
         dimensions={dimensions}
@@ -160,19 +158,25 @@ export function App() {
       />
       <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
         
-        <TaskInputForm
-          taskName={taskName}
-          onTaskNameChange={setTaskName}
+        <ControlPanel
           dimensions={dimensions}
-          formValues={formValues}
-          onFormValueChange={setFormValues}
-          onSettingsOpen={() => setIsSettingsOpen(true)}
-          onSubmit={handleAddOrUpdateTask}
-          editingTaskId={editingTaskId}
-          previewScore={previewScore}
-          formulaString={formulaString}
-          task={editingTaskId ? tasks.find(t => t.id === editingTaskId) : null}
+          onDimensionsChange={setDimensions}
+          onExport={handleExport}
+          onImport={handleImport}
+          onSave={() => {
+            saveToLocalStorage(showWeightedScores);
+            return Promise.resolve();
+          }}
         />
+
+        <div className="mt-8 flex justify-end">
+          <CreateTaskButton
+            dimensions={dimensions}
+            onSubmit={addTask}
+            previewScore={previewScore}
+            formulaString={formulaString}
+          />
+        </div>
 
         <TaskTable
           tasks={tasks}
@@ -180,7 +184,6 @@ export function App() {
           onDeleteTask={deleteTask}
           onEditTask={handleEditTask}
           onCompleteTask={completeTask}
-          editingTaskId={editingTaskId}
           showWeightedScores={showWeightedScores}
           onToggleWeightedScores={(value) => setShowWeightedScores(value)}
         />
@@ -191,13 +194,6 @@ export function App() {
           onDeleteTask={deleteCompletedTask}
           onRestoreTask={restoreTask}
           showWeightedScores={showWeightedScores}
-        />
-
-        <DimensionSettingsModal
-          isOpen={isSettingsOpen}
-          onClose={() => setIsSettingsOpen(false)}
-          dimensions={dimensions}
-          onDimensionsChange={setDimensions}
         />
       </div>
     </div>
