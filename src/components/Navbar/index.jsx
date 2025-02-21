@@ -1,12 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Logo } from '../Logo';
 import { validateImportData } from '../../utils/validation';
-import { MenuIcon } from './icons';
+import { MenuIcon, TemplateIcon, TutorialIcon, HelpIcon } from './icons';
 import { Toast } from './Toast';
 import { DropdownMenu } from './DropdownMenu';
+import { 
+  TemplatesDropdown, 
+  GettingStartedDropdown, 
+  HelpDropdown,
+  ProfileDropdown,
+  DataManagementDropdown
+} from './NavbarDropdowns';
+import { UserCircle, Database } from 'lucide-react';
 
 export const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions, showWeightedScores }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [showSaveSuccess, setShowSaveSuccess] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
@@ -14,14 +23,16 @@ export const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions, sh
   const [toast, setToast] = useState(null);
   const menuRef = useRef(null);
   const fileInputRef = useRef(null);
+  const navRef = useRef(null);
 
   const showToast = (message) => setToast(message);
   const closeMenu = () => setIsMenuOpen(false);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        closeMenu();
+      // Close menu if click is outside the entire navbar
+      if (navRef.current && !navRef.current.contains(event.target)) {
+        setActiveDropdown(null);
       }
     };
 
@@ -142,21 +153,90 @@ export const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions, sh
     }
   };
 
+  const toggleDropdown = (dropdown) => {
+    setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
+  };
+
   return (
     <>
-      <nav className="bg-slate-900 shadow-md">
+      <nav ref={navRef} className="bg-slate-900 shadow-md">
         <div className="w-full px-2 sm:px-4 md:px-6 lg:px-8">
-          <div className="flex justify-between h-20">
+          <div className="flex justify-between h-20 items-center">
+            
             {/* Logo and title */}
             <div className="flex-shrink-0 flex items-center pl-0 gap-2 sm:gap-3">
               <Logo className="h-7 w-7 sm:h-8 sm:w-8" />
               <h1 className="text-xl sm:text-2xl font-bold text-teal-300 truncate">
-                Dotable – Task Prioritizer
+                2Dotable – Task Prioritizer
               </h1>
             </div>
             
-            {/* Menu button and dropdown */}
-            <div className="flex items-center pr-0">
+            <div className="hidden md:flex items-center space-x-6">
+              <div className="relative group">
+                <button 
+                  onClick={() => toggleDropdown('templates')}
+                  className="text-teal-300 hover:text-teal-200 flex items-center gap-1 px-3 py-2 rounded-md transition-colors"
+                >
+                  <TemplateIcon className="w-5 h-5" />
+                  Templates
+                </button>
+                {activeDropdown === 'templates' && <TemplatesDropdown />}
+              </div>
+
+              <div className="relative group">
+                <button 
+                  onClick={() => toggleDropdown('getting-started')}
+                  className="text-teal-300 hover:text-teal-200 flex items-center gap-1 px-3 py-2 rounded-md transition-colors"
+                >
+                  <TutorialIcon className="w-5 h-5" />
+                  Getting Started
+                </button>
+                {activeDropdown === 'getting-started' && <GettingStartedDropdown />}
+              </div>
+
+              <div className="relative group">
+                <button 
+                  onClick={() => toggleDropdown('data')}
+                  className="text-teal-300 hover:text-teal-200 flex items-center gap-1 px-3 py-2 rounded-md transition-colors"
+                >
+                  <Database className="w-5 h-5" />
+                  Data
+                </button>
+                {activeDropdown === 'data' && (
+                  <DataManagementDropdown
+                    onSave={handleSave}
+                    onExport={handleExport}
+                    onImport={handleImport}
+                    fileInputRef={fileInputRef}
+                  />
+                )}
+              </div>
+
+              <div className="relative group">
+                <button 
+                  onClick={() => toggleDropdown('help')}
+                  className="text-teal-300 hover:text-teal-200 flex items-center gap-1 px-3 py-2 rounded-md transition-colors"
+                >
+                  <HelpIcon className="w-5 h-5" />
+                  Help
+                </button>
+                {activeDropdown === 'help' && <HelpDropdown />}
+              </div>
+
+              {/* Profile Section */}
+              <div className="relative group">
+                <button 
+                  onClick={() => toggleDropdown('profile')}
+                  className="text-teal-300 hover:text-teal-200 flex items-center gap-1 px-3 py-2 rounded-md transition-colors"
+                >
+                  <UserCircle className="w-8 h-8" />
+                </button>
+                {activeDropdown === 'profile' && <ProfileDropdown />}
+              </div>
+            </div>
+            
+            {/* Mobile Menu Button */}
+            <div className="flex md:hidden items-center pr-0">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="inline-flex items-center justify-center p-2 sm:p-3 rounded-md text-teal-300 hover:text-teal-200 hover:bg-slate-800 focus:outline-none"
@@ -165,19 +245,6 @@ export const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions, sh
                 <span className="sr-only">Open menu</span>
                 <MenuIcon />
               </button>
-
-              <DropdownMenu
-                isOpen={isMenuOpen}
-                menuRef={menuRef}
-                onSave={handleSave}
-                onExport={handleExport}
-                onImport={handleImport}
-                isSaving={isSaving}
-                showSaveSuccess={showSaveSuccess}
-                isImporting={isImporting}
-                showImportSuccess={showImportSuccess}
-                fileInputRef={fileInputRef}
-              />
             </div>
           </div>
         </div>
