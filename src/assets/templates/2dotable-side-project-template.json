@@ -1,0 +1,199 @@
+{
+  "metadata": {
+    "exportDate": "2025-02-21T12:54:24.944Z",
+    "totalActiveTasks": 10,
+    "totalCompletedTasks": 0
+  },
+  "settings": {
+    "showWeightedScores": true
+  },
+  "dimensions": [
+    {
+      "name": "easiness",
+      "label": "Easiness",
+      "weight": 1,
+      "description": "How easy it is to complete the task."
+    },
+    {
+      "name": "personalGrowth",
+      "label": "Personal Growth",
+      "weight": 2,
+      "description": "Opportunity for learning and skill development."
+    },
+    {
+      "name": "urgency",
+      "label": "Urgency",
+      "weight": 3,
+      "description": "How time-sensitive or deadline-driven the task is."
+    },
+    {
+      "name": "financialgain",
+      "label": "Financial Gain",
+      "weight": 4,
+      "description": "How much money is expected once this task is completed?"
+    }
+  ],
+  "activeTasks": [
+    {
+      "id": 1739991434456,
+      "name": "AI Olympiad",
+      "createdAt": "2025-02-19T18:57:14.456Z",
+      "description": "Good competition",
+      "deadline": "2025-03-25",
+      "tags": [
+        "Competition"
+      ],
+      "scores": {
+        "easiness": 3,
+        "personalGrowth": 3,
+        "urgency": 5,
+        "financialgain": 5
+      }
+    },
+    {
+      "id": 1739991439625,
+      "name": "Kaggle March Madness",
+      "createdAt": "2025-02-19T18:57:19.625Z",
+      "description": "",
+      "deadline": "2025-03-20",
+      "tags": [
+        "Competition"
+      ],
+      "scores": {
+        "easiness": 3,
+        "personalGrowth": 2,
+        "urgency": 5,
+        "financialgain": 4
+      }
+    },
+    {
+      "id": 1739989333624,
+      "name": "Numerai",
+      "createdAt": "2025-02-19T18:22:13.624Z",
+      "description": "",
+      "deadline": null,
+      "tags": [
+        "Competition"
+      ],
+      "scores": {
+        "easiness": 2,
+        "personalGrowth": 2,
+        "urgency": 3,
+        "financialgain": 4
+      }
+    },
+    {
+      "id": 1739991277064,
+      "name": "Nutrition Tracker",
+      "createdAt": "2025-02-19T18:54:37.064Z",
+      "description": "",
+      "deadline": null,
+      "tags": [
+        "App"
+      ],
+      "scores": {
+        "easiness": 3,
+        "personalGrowth": 3,
+        "urgency": 3,
+        "financialgain": 3
+      }
+    },
+    {
+      "id": 1739991269549,
+      "name": "Decision Matrix",
+      "createdAt": "2025-02-19T18:54:29.549Z",
+      "description": "",
+      "deadline": null,
+      "tags": [
+        "App"
+      ],
+      "scores": {
+        "easiness": 3,
+        "personalGrowth": 3,
+        "urgency": 2,
+        "financialgain": 3
+      }
+    },
+    {
+      "id": 1739991444249,
+      "name": "Dynamic Rhythms",
+      "createdAt": "2025-02-19T18:57:24.249Z",
+      "description": "",
+      "deadline": "2025-05-01",
+      "tags": [
+        "Competition"
+      ],
+      "scores": {
+        "easiness": 4,
+        "personalGrowth": 1,
+        "urgency": 3,
+        "financialgain": 2
+      }
+    },
+    {
+      "id": 1739991499693,
+      "name": "Posture Analyzer",
+      "createdAt": "2025-02-19T18:58:19.693Z",
+      "description": "",
+      "deadline": null,
+      "tags": [
+        "App"
+      ],
+      "scores": {
+        "easiness": 2,
+        "personalGrowth": 3,
+        "urgency": 3,
+        "financialgain": 1
+      }
+    },
+    {
+      "id": 1739989269831,
+      "name": "Cell Division",
+      "createdAt": "2025-02-19T18:21:09.831Z",
+      "description": "",
+      "deadline": null,
+      "tags": [
+        "App"
+      ],
+      "scores": {
+        "easiness": 3,
+        "personalGrowth": 2,
+        "urgency": 2,
+        "financialgain": 2
+      }
+    },
+    {
+      "id": 1739991139123,
+      "name": "Cell Extension",
+      "createdAt": "2025-02-19T18:52:19.123Z",
+      "description": "",
+      "deadline": null,
+      "tags": [
+        "App"
+      ],
+      "scores": {
+        "easiness": 3,
+        "personalGrowth": 2,
+        "urgency": 1,
+        "financialgain": 2
+      }
+    },
+    {
+      "id": 1739991453599,
+      "name": "Synthetic Art Maker",
+      "createdAt": "2025-02-19T18:57:33.599Z",
+      "description": "",
+      "deadline": null,
+      "tags": [
+        "App"
+      ],
+      "scores": {
+        "easiness": 3,
+        "personalGrowth": 3,
+        "urgency": 1,
+        "financialgain": 1
+      }
+    }
+  ],
+  "completedTasks": []
+}

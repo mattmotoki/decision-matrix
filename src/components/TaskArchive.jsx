@@ -35,7 +35,6 @@ export function TaskArchive({
                 <th 
                   key={dim.name}
                   className="px-4 py-2 text-center font-medium w-32"
-                  title={dim.description}
                 >
                   {dim.label}
                   {!showWeightedScores && <span className="text-xs text-teal-300 ml-1">(×{dim.weight})</span>}
