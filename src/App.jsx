@@ -9,11 +9,9 @@ import { useDimensions } from './shared/hooks/useDimensions';
 import { calculateImportance, createFormValues, formatFormulaString } from './utils/taskUtils';
 import './App.css';
 
-
-
 export function App() {
   // State management
-  const [dimensions, setDimensions] = useDimensions();
+  const [dimensions, setDimensions, saveDimensions] = useDimensions();
   const [showWeightedScores, setShowWeightedScores] = useState(() => {
     const saved = localStorage.getItem('decision-matrix-show-weighted-scores');
     return saved ? JSON.parse(saved) : true;
@@ -41,7 +39,6 @@ export function App() {
   const formulaString = formatFormulaString(dimensions, createFormValues(dimensions));
 
   const handleEditTask = (task) => {
-    // We now only need to handle the actual task update
     const updatedTasks = tasks.map(t => 
       t.id === task.id ? { ...t, ...task } : t
     );
@@ -94,7 +91,7 @@ export function App() {
     } catch (error) {
       console.error('Import error:', error);
       alert(`Import failed: ${error.message}`);
-      throw error; // Re-throw to be caught by the error boundary
+      throw error;
     }
   };
 
@@ -155,13 +152,16 @@ export function App() {
     }
   };
 
+  const handleSave = () => {
+    saveDimensions();
+    saveToLocalStorage(showWeightedScores);
+    return Promise.resolve();
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar 
-        onSave={() => {
-          saveToLocalStorage(showWeightedScores);
-          return Promise.resolve();
-        }}
+        onSave={handleSave}
         onImport={handleImport}
         onExport={handleExport}
         tasks={tasks}
@@ -176,10 +176,7 @@ export function App() {
           onDimensionsChange={setDimensions}
           onExport={handleExport}
           onImport={handleImport}
-          onSave={() => {
-            saveToLocalStorage(showWeightedScores);
-            return Promise.resolve();
-          }}
+          onSave={handleSave}
         />
 
         <div className="mt-8 flex justify-end">
