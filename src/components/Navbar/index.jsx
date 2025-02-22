@@ -1,27 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Logo } from '../Logo';
 import { validateImportData } from '../../utils/validation';
-import { MenuIcon, TemplateIcon, TutorialIcon, HelpIcon } from './icons';
-import { Toast } from './Toast';
-import { DropdownMenu } from './DropdownMenu';
-import { 
-  TemplatesDropdown, 
-  GettingStartedDropdown, 
-  HelpDropdown,
-  ProfileDropdown,
-  DataManagementDropdown
-} from './NavbarDropdowns';
-import { UserCircle, Database } from 'lucide-react';
+import { MenuIcon, TutorialIcon, HelpIcon } from '../../shared/components/icons';
+import { Toast } from '../../shared/components/Toast';
+import { GettingStartedDropdown } from './GettingStartedDropdown';
+import { HelpDropdown } from './HelpDropdown';
+import { ProfileDropdown } from './ProfileDropdown';
+import { UserCircle } from 'lucide-react';
 
-export const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions, showWeightedScores }) => {
+export function Navbar({ onSave, onImport }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [showSaveSuccess, setShowSaveSuccess] = useState(false);
-  const [isImporting, setIsImporting] = useState(false);
-  const [showImportSuccess, setShowImportSuccess] = useState(false);
   const [toast, setToast] = useState(null);
-  const menuRef = useRef(null);
   const fileInputRef = useRef(null);
   const navRef = useRef(null);
 
@@ -58,64 +50,6 @@ export const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions, sh
       }, 1500);
     } finally {
       setIsSaving(false);
-    }
-  };
-
-  const handleExport = () => {
-    const data = {
-      metadata: {
-        exportDate: new Date().toISOString(),
-        totalActiveTasks: tasks.length,
-        totalCompletedTasks: completedTasks.length
-      },
-      settings: {
-        showWeightedScores
-      },
-      dimensions: dimensions.map(dim => ({
-        name: dim.name,
-        label: dim.label,
-        weight: dim.weight,
-        description: dim.description
-      })),
-      activeTasks: tasks.map(task => ({
-        id: task.id,
-        name: task.name,
-        createdAt: task.createdAt,
-        description: task.description,
-        deadline: task.deadline,
-        tags: task.tags || [],
-        scores: Object.fromEntries(
-          dimensions.map(dim => [dim.name, task[dim.name]])
-        )
-      })),
-      completedTasks: completedTasks.map(task => ({
-        id: task.id,
-        name: task.name,
-        createdAt: task.createdAt,
-        completedAt: task.completedAt,
-        description: task.description,
-        deadline: task.deadline,
-        tags: task.tags || [],
-        scores: Object.fromEntries(
-          dimensions.map(dim => [dim.name, task[dim.name]])
-        )
-      }))
-    };
-
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    
-    try {
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `dotable-export-${timestamp}.json`;
-      document.body.appendChild(a);
-      a.click();
-    } finally {
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      closeMenu();
     }
   };
 
@@ -174,17 +108,6 @@ export const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions, sh
             <div className="hidden md:flex items-center space-x-6">
               <div className="relative group">
                 <button 
-                  onClick={() => toggleDropdown('templates')}
-                  className="text-teal-300 hover:text-teal-200 flex items-center gap-1 px-3 py-2 rounded-md transition-colors"
-                >
-                  <TemplateIcon className="w-5 h-5" />
-                  Templates
-                </button>
-                {activeDropdown === 'templates' && <TemplatesDropdown />}
-              </div>
-
-              <div className="relative group">
-                <button 
                   onClick={() => toggleDropdown('getting-started')}
                   className="text-teal-300 hover:text-teal-200 flex items-center gap-1 px-3 py-2 rounded-md transition-colors"
                 >
@@ -192,24 +115,6 @@ export const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions, sh
                   Getting Started
                 </button>
                 {activeDropdown === 'getting-started' && <GettingStartedDropdown />}
-              </div>
-
-              <div className="relative group">
-                <button 
-                  onClick={() => toggleDropdown('data')}
-                  className="text-teal-300 hover:text-teal-200 flex items-center gap-1 px-3 py-2 rounded-md transition-colors"
-                >
-                  <Database className="w-5 h-5" />
-                  Data
-                </button>
-                {activeDropdown === 'data' && (
-                  <DataManagementDropdown
-                    onSave={handleSave}
-                    onExport={handleExport}
-                    onImport={handleImport}
-                    fileInputRef={fileInputRef}
-                  />
-                )}
               </div>
 
               <div className="relative group">
@@ -231,7 +136,7 @@ export const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions, sh
                 >
                   <UserCircle className="w-8 h-8" />
                 </button>
-                {activeDropdown === 'profile' && <ProfileDropdown />}
+                {activeDropdown === 'profile' && <ProfileDropdown onSave={handleSave} />}
               </div>
             </div>
             
@@ -252,4 +157,4 @@ export const Navbar = ({ onSave, onImport, tasks, completedTasks, dimensions, sh
       {toast && <Toast message={toast} onHide={() => setToast(null)} />}
     </>
   );
-}; 
+} 

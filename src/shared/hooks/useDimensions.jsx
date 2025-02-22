@@ -17,8 +17,11 @@ export function useDimensions() {
 
   const updateDimensions = (newDimensions) => {
     setDimensions(newDimensions);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(newDimensions));
   };
 
-  return [dimensions, updateDimensions];
+  const saveDimensions = () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(dimensions));
+  };
+
+  return [dimensions, updateDimensions, saveDimensions];
 } 

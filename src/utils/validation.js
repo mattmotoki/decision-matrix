@@ -22,56 +22,42 @@ export function validateImportData(data) {
     }
   });
 
-  // Validate settings
-  if (!data.settings || typeof data.settings !== 'object') {
-    throw new Error('Missing or invalid settings');
-  }
-  if (typeof data.settings.showWeightedScores !== 'boolean') {
-    throw new Error('Invalid showWeightedScores setting');
+  // Validate settings (optional)
+  if (data.settings && typeof data.settings !== 'object') {
+    throw new Error('Invalid settings object');
   }
 
-  // Validate tasks arrays
-  if (!Array.isArray(data.activeTasks)) {
-    throw new Error('Missing or invalid activeTasks array');
-  }
-  if (!Array.isArray(data.completedTasks)) {
-    throw new Error('Missing or invalid completedTasks array');
-  }
+  // Ensure activeTasks and completedTasks are arrays (can be empty)
+  data.activeTasks = Array.isArray(data.activeTasks) ? data.activeTasks : [];
+  data.completedTasks = Array.isArray(data.completedTasks) ? data.completedTasks : [];
 
   // Validate each task
-  const validateTask = (task, isCompleted = false) => {
-    if (!task.id || typeof task.id !== 'number') {
-      throw new Error('Invalid task ID');
+  const validateTask = (task) => {
+    if (!task.id) {
+      task.id = Date.now() + Math.random(); // Generate a unique ID if missing
     }
     if (!task.name || typeof task.name !== 'string') {
       throw new Error('Invalid task name');
     }
-    if (!task.createdAt || isNaN(Date.parse(task.createdAt))) {
-      throw new Error('Invalid task creation date');
+    if (!task.createdAt) {
+      task.createdAt = new Date().toISOString(); // Set current date if missing
     }
-    if (!task.scores || typeof task.scores !== 'object') {
-      throw new Error('Invalid task scores');
-    }
-    if (isCompleted && (!task.completedAt || isNaN(Date.parse(task.completedAt)))) {
+    if (task.completedAt && isNaN(Date.parse(task.completedAt))) {
       throw new Error('Invalid task completion date');
     }
-    // Optional fields validation
-    if (task.description && typeof task.description !== 'string') {
-      throw new Error('Invalid task description');
-    }
-    if (task.deadline && isNaN(Date.parse(task.deadline))) {
-      throw new Error('Invalid task deadline');
-    }
-    if (task.tags && !Array.isArray(task.tags)) {
-      throw new Error('Invalid task tags');
-    }
-    if (task.tags && !task.tags.every(tag => typeof tag === 'string')) {
-      throw new Error('Invalid tag format');
-    }
+    
+    // Ensure scores object exists
+    task.scores = task.scores || {};
+    
+    // Optional fields validation with defaults
+    task.description = task.description || '';
+    task.deadline = task.deadline || null;
+    task.tags = Array.isArray(task.tags) ? task.tags : [];
   };
 
-  data.activeTasks.forEach(task => validateTask(task));
-  data.completedTasks.forEach(task => validateTask(task, true));
+  // Validate and normalize tasks
+  data.activeTasks.forEach(validateTask);
+  data.completedTasks.forEach(validateTask);
 
   return true;
 } 

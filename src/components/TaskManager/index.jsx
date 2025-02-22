@@ -1,4 +1,4 @@
-export { TaskManager } from './Manager';
 export { DimensionScore, ImportanceScore } from './ScoreDisplay';
-export { DimensionSlider } from './SliderWithControls';
-export { DimensionSettingsModal } from './SettingsModal'; 
+export { TaskValueSlider } from './TaskValueSlider';
+export { CreateTaskButton } from './CreateTaskButton'; 
+export { TaskEditForm } from './TaskEditForm';
