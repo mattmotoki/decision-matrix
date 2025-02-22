@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Download, Upload, Grid, Star, Share2 } from 'lucide-react';
 import { ControlItem } from './ControlItem';
 
@@ -14,13 +14,46 @@ export function ExportTemplateButton({ onClick }) {
 }
 
 export function ImportTemplateButton({ onClick }) {
+  const fileInputRef = useRef(null);
+
+  const handleClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      onClick(data);
+    } catch (error) {
+      console.error('Import error:', error);
+      alert(`Import failed: ${error.message}`);
+    } finally {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
   return (
-    <ControlItem
-      icon={Upload}
-      label="Import Template"
-      description="Import from JSON file"
-      onClick={onClick}
-    />
+    <>
+      <ControlItem
+        icon={Upload}
+        label="Import Template"
+        description="Import from JSON file"
+        onClick={handleClick}
+      />
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept=".json"
+        className="hidden"
+      />
+    </>
   );
 }
 

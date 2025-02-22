@@ -35,10 +35,6 @@ export function TaskForm({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const toggleDropdown = (name) => {
-    setActiveDropdown(activeDropdown === name ? null : name);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit({
@@ -88,7 +84,6 @@ export function TaskForm({
           
           {dimensions.map(dim => (
             <TaskValueSlider
-              key={dim.name}
               name={dim.name}
               label={dim.label}
               description={dim.description}

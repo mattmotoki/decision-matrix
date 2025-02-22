@@ -49,40 +49,53 @@ export function App() {
   };
 
   const handleImport = (data) => {
-    // Update dimensions first
-    setDimensions(data.dimensions);
-    
-    // Update tasks with the new scores format
-    const processTask = (task) => ({
-      id: task.id,
-      name: task.name,
-      createdAt: task.createdAt,
-      description: task.description,
-      deadline: task.deadline,
-      tags: task.tags || [],
-      // Ensure all dimensions have values
-      ...Object.fromEntries(data.dimensions.map(dim => [dim.name, 0])), // Default values
-      ...task.scores, // Override with actual scores
-      ...(task.completedAt ? { completedAt: task.completedAt } : {})
-    });
+    try {
+      // Update dimensions first
+      if (!Array.isArray(data.dimensions)) {
+        throw new Error('Invalid dimensions data');
+      }
+      setDimensions(data.dimensions);
 
-    // Set active and completed tasks
-    const activeTasks = data.activeTasks.map(processTask);
-    const completedTasks = data.completedTasks.map(processTask);
-    
-    // Update tasks state
-    setTasks(activeTasks);
-    setCompletedTasks(completedTasks);
-    
-    // Update settings
-    if (data.settings?.showWeightedScores !== undefined) {
-      setShowWeightedScores(data.settings.showWeightedScores);
+      // Process tasks
+      const processTask = (task) => {
+        const scores = task.scores || {};
+        const processedTask = {
+          id: task.id || Date.now() + Math.random(),
+          name: task.name,
+          createdAt: task.createdAt || new Date().toISOString(),
+          description: task.description || '',
+          deadline: task.deadline || null,
+          tags: Array.isArray(task.tags) ? task.tags : [],
+        };
+
+        // Add dimension scores
+        data.dimensions.forEach(dim => {
+          processedTask[dim.name] = scores[dim.name] || 0;
+        });
+
+        if (task.completedAt) {
+          processedTask.completedAt = task.completedAt;
+        }
+
+        return processedTask;
+      };
+
+      // Set active and completed tasks
+      const activeTasks = (data.activeTasks || []).map(processTask);
+      const completedTasks = (data.completedTasks || []).map(processTask);
+      
+      setTasks(activeTasks);
+      setCompletedTasks(completedTasks);
+      
+      // Update settings if present
+      if (data.settings?.showWeightedScores !== undefined) {
+        setShowWeightedScores(Boolean(data.settings.showWeightedScores));
+      }
+    } catch (error) {
+      console.error('Import error:', error);
+      alert(`Import failed: ${error.message}`);
+      throw error; // Re-throw to be caught by the error boundary
     }
-    
-    // Reset form values to match new dimensions
-    setFormValues(createFormValues(data.dimensions));
-    setTaskName('');
-    setEditingTaskId(null);
   };
 
   const handleExport = () => {
