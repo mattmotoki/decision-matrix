@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { MoreHorizontal } from 'lucide-react';
-import { DimensionScore } from '../TaskManager';
+import { DimensionScore } from '../../shared/components/Score';
 import { calculateImportance, getScoreColor } from '../../utils/taskUtils';
 import { ContextMenu } from './ContextMenu';
 
@@ -14,27 +14,26 @@ export function TaskRow({
   index,
   className = ''
 }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const menuRef = useRef(null);
+  const [menuAnchor, setMenuAnchor] = useState(null);
 
   const totalScore = calculateImportance(task, dimensions);
   const maxPossibleScore = dimensions.reduce((sum, dim) => sum + (5 * dim.weight), 0);
   const scoreColorClass = getScoreColor(totalScore, maxPossibleScore, true);
 
-  const handleOpenMenu = (event) => {
+  const handleMenuClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
     
-    setIsMenuOpen(prev => {
-      if (!prev) {
-        const rect = event.currentTarget.getBoundingClientRect();
-        setMenuPosition({
-          x: rect.left - 100,
-          y: rect.top + window.scrollY + rect.height + 4
-        });
-      }
-      return !prev;
+    if (menuAnchor) {
+      setMenuAnchor(null);
+      return;
+    }
+    
+    const rect = event.currentTarget.getBoundingClientRect();
+    setMenuAnchor({
+      x: rect.left - 100,
+      y: rect.top + window.scrollY + rect.height + 4
     });
   };
 
@@ -104,19 +103,19 @@ export function TaskRow({
       <td className={`px-4 py-2 ${scoreColorClass}`}>
         <div className="flex justify-center">
           <button
-            onClick={handleOpenMenu}
+            onClick={handleMenuClick}
             className="p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <MoreHorizontal size={16} />
           </button>
           <ContextMenu
-            isOpen={isMenuOpen}
-            setIsOpen={setIsMenuOpen}
+            isOpen={Boolean(menuAnchor)}
+            setIsOpen={(open) => setMenuAnchor(open ? menuAnchor : null)}
             task={task}
             onEdit={onEdit}
             onDelete={() => onDelete(index)}
             onComplete={onComplete}
-            position={menuPosition}
+            position={menuAnchor || {}}
             menuRef={menuRef}
           />
         </div>

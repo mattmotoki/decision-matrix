@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { Download, Upload, Grid, Star, Share2 } from 'lucide-react';
 import { ControlItem } from './ControlItem';
+import { Link } from 'react-router-dom';
 
 export function ExportTemplateButton({ onClick }) {
   return (
@@ -59,12 +60,13 @@ export function ImportTemplateButton({ onClick }) {
 
 export function BrowseTemplatesButton() {
   return (
-    <ControlItem
-      icon={Grid}
-      label="Browse Templates"
-      description="Explore pre-built decision matrices"
-      href="/templates"
-    />
+    <Link to="browse-templates">
+      <ControlItem
+        icon={Grid}
+        label="Browse Templates"
+        description="Explore pre-built decision matrices"
+      />
+    </Link>
   );
 }
 
@@ -74,7 +76,7 @@ export function FavoriteTemplatesButton() {
       icon={Star}
       label="Favorite Templates"
       description="Quick access to your saved templates"
-      href="/templates"
+      href="/"
     />
   );
 }
@@ -85,7 +87,7 @@ export function CommunityTemplatesButton() {
       icon={Share2}
       label="Community Templates"
       description="Discover and share templates"
-      href="/templates"
+      href="/"
     />
   );
 } 

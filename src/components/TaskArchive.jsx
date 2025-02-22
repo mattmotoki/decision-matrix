@@ -1,8 +1,7 @@
-// components/TaskArchive.jsx
 import React, { useState } from 'react';
 import { Trash2, RefreshCw } from 'lucide-react';
 import { ConfirmationModal } from './ConfirmationModal';
-import { DimensionScore, ImportanceScore } from './TaskManager';
+import { DimensionScore, ImportanceScore } from '../shared/components/Score';
 
 export function TaskArchive({
   tasks,
