@@ -2,7 +2,7 @@ import React from 'react';
 import { User, Save, Settings, History, LogOut } from 'lucide-react';
 import { DropdownItem } from './DropdownItem';
 
-export function ProfileDropdown({ onSave }) {
+export function ProfileDropdown({ onSave, setToast }) {
   return (
     <div className="absolute z-50 top-full right-0 mt-2 w-72 bg-white rounded-lg shadow-lg border border-slate-200 p-4">
       <div className="flex items-center gap-3 pb-3 mb-3 border-b border-slate-200">
@@ -20,6 +20,7 @@ export function ProfileDropdown({ onSave }) {
           label="My Profile"
           description="View and edit your profile"
           href="/profile"
+          setToast={setToast}
         />   
         <DropdownItem 
           icon={Save}
@@ -27,18 +28,22 @@ export function ProfileDropdown({ onSave }) {
           description="Save your current progress"
           href="#"
           onClick={onSave}
+          implemented={true}
+          setToast={setToast}
         />          
         <DropdownItem 
           icon={Settings}
           label="Account Settings"
           description="Manage your account preferences"
           href="/profile/settings"
+          setToast={setToast}
         />    
         <DropdownItem 
           icon={History}
           label="Decision History"
           description="View your past decisions"
           href="/profile/history"
+          setToast={setToast}
         />
         <div className="pt-2 mt-2 border-t border-slate-200">
           <DropdownItem 
@@ -46,6 +51,7 @@ export function ProfileDropdown({ onSave }) {
             label="Sign Out"
             description="Log out of your account"
             href="/logout"
+            setToast={setToast}
           />
         </div>
       </div>

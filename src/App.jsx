@@ -1,25 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CreateTaskButton } from './components/TaskManager';
-import { TaskTable } from './components/TaskTable';
+import { DoTable } from './components/DoTable';
 import { TaskArchive } from './components/TaskArchive';
 import { Navbar } from './components/Navbar';
 import { ControlPanel } from './components/ControlPanel';
-import { useTasks } from './shared/hooks/useTasks';
+import { Footer } from './components/Footer';
+import { useTasks, STORAGE_KEYS } from './shared/hooks/useTasks';
 import { useDimensions } from './shared/hooks/useDimensions';
 import { calculateImportance, createFormValues, formatFormulaString } from './utils/taskUtils';
 import './App.css';
 import { BrowseTemplates } from './pages/BrowseTemplates';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { PrivacyPolicy } from './pages/PrivacyPolicy';
+import { TermsOfService } from './pages/TermsOfService';
 
-export function App() {
+function loadTemplateFromStorage() {
+  const storedTemplate = localStorage.getItem('currentTemplate');
+  if (!storedTemplate) return null;
+  try {
+    return JSON.parse(storedTemplate);
+  } catch (e) {
+    console.error('Error parsing stored template:', e);
+    return null;
+  }
+}
+
+// Create an inner component that can use the useNavigate hook
+function AppContent() {
+  const navigate = useNavigate();
+  
+  // Initialize template and dimensions from localStorage
+  const [currentTemplate, setCurrentTemplate] = useState(loadTemplateFromStorage);
+  
+  // Update localStorage whenever template changes
+  useEffect(() => {
+    if (currentTemplate) {
+      localStorage.setItem('currentTemplate', JSON.stringify(currentTemplate));
+    }
+  }, [currentTemplate]);
+
+  const dimensions = currentTemplate?.dimensions || [];
+
   // State management
-  const [dimensions, setDimensions, saveDimensions] = useDimensions();
   const [showWeightedScores, setShowWeightedScores] = useState(() => {
     const saved = localStorage.getItem('decision-matrix-show-weighted-scores');
     return saved ? JSON.parse(saved) : true;
   });
   
-  // Custom hook for task management
+  // Get tasks state and methods from the hook
   const {
     tasks,
     completedTasks,
@@ -40,20 +68,13 @@ export function App() {
   const previewScore = calculateImportance(createFormValues(dimensions), dimensions);
   const formulaString = formatFormulaString(dimensions, createFormValues(dimensions));
 
-  const handleEditTask = (task) => {
-    const updatedTasks = tasks.map(t => 
-      t.id === task.id ? { ...t, ...task } : t
-    );
-    setTasks(updatedTasks);
-  };
-
   const handleImport = (data) => {
     try {
       // Update dimensions first
       if (!Array.isArray(data.dimensions)) {
         throw new Error('Invalid dimensions data');
       }
-      setDimensions(data.dimensions);
+      setCurrentTemplate(prev => ({ ...prev, dimensions: data.dimensions }));
 
       // Process tasks
       const processTask = (task) => {
@@ -155,29 +176,71 @@ export function App() {
   };
 
   const handleSave = () => {
-    saveDimensions();
+    localStorage.setItem('currentTemplate', JSON.stringify(currentTemplate));
     saveToLocalStorage(showWeightedScores);
     return Promise.resolve();
   };
 
+  const handleTemplateSelect = (template) => {
+    // Create new dimensions array while preserving weights and normalizing names
+    const newDimensions = template.dimensions.map(dim => ({
+      ...dim,
+      name: dim.name.toLowerCase().replace(/\s+/g, '_')  // normalize dimension names only
+    }));
+
+    // Set the complete template with new dimensions
+    setCurrentTemplate({
+      ...template,
+      dimensions: newDimensions
+    });
+    
+    // Create sample tasks with proper structure
+    const tasks = (template.tasks || []).map(task => {
+      // Create a case-insensitive map of values
+      const normalizedValues = {};
+      Object.entries(task.values).forEach(([key, value]) => {
+        normalizedValues[key.toLowerCase().replace(/\s+/g, '_')] = value;
+      });
+      
+      // Create the base task object
+      const newTask = {
+        id: Date.now() + Math.random(),
+        name: task.name,
+        createdAt: new Date().toISOString(),
+        description: '',
+        deadline: null,
+        tags: []
+      };
+
+      // Add dimension values directly to the task object
+      newDimensions.forEach(dim => {
+        newTask[dim.name] = normalizedValues[dim.name] || 0;
+      });
+
+      return newTask;
+    });
+    
+    // Set tasks and update localStorage
+    setTasks(tasks);
+    localStorage.setItem(STORAGE_KEYS.ACTIVE_TASKS, JSON.stringify(tasks));
+    localStorage.setItem(STORAGE_KEYS.COMPLETED_TASKS, JSON.stringify([]));
+    
+    // Use React Router's navigate
+    navigate('/');
+  };
+
   return (
-    <BrowserRouter 
-      basename="/todotable"
-      future={{
-        v7_startTransition: true,
-        v7_relativeSplatPath: true
-      }}
-    >
-      <div className="min-h-screen bg-gray-50">
-        <Navbar 
-          onSave={handleSave}
-          onImport={handleImport}
-          onExport={handleExport}
-          tasks={tasks}
-          completedTasks={completedTasks}
-          dimensions={dimensions}
-          showWeightedScores={showWeightedScores}
-        />
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Navbar 
+        onSave={handleSave}
+        onImport={handleImport}
+        onExport={handleExport}
+        tasks={tasks}
+        completedTasks={completedTasks}
+        dimensions={dimensions}
+        showWeightedScores={showWeightedScores}
+      />
+      <div className="flex-grow">
         <Routes>
           <Route
             path="/"
@@ -185,7 +248,7 @@ export function App() {
               <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
                 <ControlPanel
                   dimensions={dimensions}
-                  onDimensionsChange={setDimensions}
+                  onDimensionsChange={(newDimensions) => setCurrentTemplate(prev => ({ ...prev, dimensions: newDimensions }))}
                   onExport={handleExport}
                   onImport={handleImport}
                   onSave={handleSave}
@@ -200,11 +263,11 @@ export function App() {
                   />
                 </div>
 
-                <TaskTable
+                <DoTable
                   tasks={tasks}
                   dimensions={dimensions}
                   onDeleteTask={deleteTask}
-                  onEditTask={handleEditTask}
+                  onEditTask={updateTask}
                   onCompleteTask={completeTask}
                   showWeightedScores={showWeightedScores}
                   onToggleWeightedScores={(value) => setShowWeightedScores(value)}
@@ -220,9 +283,34 @@ export function App() {
               </div>
             }
           />
-          <Route path="/browse-templates" element={<BrowseTemplates />} />
+          <Route
+            path="/browse-templates"
+            element={
+              <BrowseTemplates
+                onTemplateSelect={handleTemplateSelect}
+              />
+            }
+          />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
         </Routes>
       </div>
+      <Footer />
+    </div>
+  );
+}
+
+
+export function App() {
+  return (
+    <BrowserRouter 
+      basename="/dotable/"
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true
+      }}
+    >
+      <AppContent />
     </BrowserRouter>
   );
 }

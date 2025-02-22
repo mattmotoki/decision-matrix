@@ -1,12 +1,12 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { 
-  ArrowLeft, 
-  Grid, 
-  Utensils, 
-  GraduationCap, 
-  Code, 
-  Plane, 
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+  ArrowLeft,
+  Grid,
+  Utensils,
+  GraduationCap,
+  Code,
+  Plane,
   Briefcase,
   Home,
   Dog,
@@ -15,8 +15,9 @@ import {
   Smartphone
 } from 'lucide-react';
 import { sampleTemplates } from '../data/sampleTemplates';
+import { EditDimensionsModal } from '../components/ControlPanel/DimensionEditor';
 
-// Map template IDs to their corresponding icons
+
 const templateIcons = {
   'restaurant-choice': Utensils,
   'college-selection': GraduationCap,
@@ -34,24 +35,25 @@ function TemplateCard({ template, onSelect }) {
   const IconComponent = templateIcons[template.id] || Grid;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 flex flex-col justify-between group">
+    <div className="bg-teal-75 border border-gray-200 rounded-xl p-6 hover:bg-teal-200 shadow-lg transition-all duration-300 flex flex-col justify-between group">
       <div>
         <div className="flex items-center gap-3 mb-3">
           <IconComponent className="text-teal-600 w-8 h-8 flex-shrink-0" />
           <h3 className="text-xl font-semibold text-gray-900">{template.name}</h3>
         </div>
-        <p className="text-gray-600 mb-6 line-clamp-2 ml-1">{template.description}</p>
-        <div className="mt-6">
-          <ul className="space-y-2">
+        <p className="text-gray-600 mb-4 line-clamp-2 ml-1">{template.description}</p>
+        <div className="mt-4">
+          <ul className="space-y-1 pl-2">
+
             {template.dimensions.map((dimension) => (
               <li
                 key={dimension.name}
-                className="text-sm flex items-center bg-gray-100 rounded-lg p-2.5 
-                           border border-gray-200 shadow-sm"
+                className="text-sm flex items-center bg-teal-50 rounded-lg p-1.5 px-4
+                         border border-gray-200 shadow-sm"
               >
                 <span className="mr-2 text-teal-600">•</span>
                 <span className="font-medium text-gray-700">{dimension.name}</span>
-                <span className="ml-auto font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded">
+                <span className="ml-auto font-bold text-teal-700 px-1 py-0.5 rounded">
                   {dimension.weight}x
                 </span>
               </li>
@@ -61,11 +63,10 @@ function TemplateCard({ template, onSelect }) {
       </div>
       <button
         onClick={() => onSelect(template)}
-        className="mt-8 w-full bg-gradient-to-br from-teal-500 to-teal-600 
-                   text-white px-6 py-3.5 rounded-lg hover:from-teal-600 
-                   hover:to-teal-700 transition-all duration-200 font-semibold 
-                   text-lg shadow-sm hover:shadow-md active:transform 
-                   active:scale-98 uppercase tracking-wide"
+        className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 
+                   bg-teal-500 text-white rounded-lg hover:bg-teal-600 
+                   focus:outline-none focus:ring-2 focus:ring-teal-500 
+                   focus:ring-offset-2 transition-colors text-lg"
       >
         Use Template
       </button>
@@ -73,11 +74,29 @@ function TemplateCard({ template, onSelect }) {
   );
 }
 
-export function BrowseTemplates() {
+export function BrowseTemplates({ onTemplateSelect }) {
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const navigate = useNavigate();
+
   const handleTemplateSelect = (template) => {
-    // TODO: Implement template selection logic
-    console.log('Selected template:', template);
-    alert(`Selected template: ${template.name}`);
+    setSelectedTemplate(template);
+    setIsEditModalOpen(true);
+  };
+
+  const handleDimensionsChange = (newDimensions) => {
+    const templateData = {
+      ...selectedTemplate,
+      dimensions: newDimensions.map(dim => ({
+        name: dim.name,
+        label: dim.label,
+        weight: dim.weight
+      }))
+    };
+
+    onTemplateSelect(templateData);
+    setIsEditModalOpen(false);
+    navigate('/');
   };
 
   return (
@@ -107,6 +126,17 @@ export function BrowseTemplates() {
           />
         ))}
       </div>
+
+      {selectedTemplate && (
+        <EditDimensionsModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          dimensions={selectedTemplate.dimensions}
+          onDimensionsChange={handleDimensionsChange}
+        />
+      )}
+
+
     </div>
   );
 } 

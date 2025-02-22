@@ -2,13 +2,14 @@ import React, { useRef } from 'react';
 import { Download, Upload, Grid, Star, Share2 } from 'lucide-react';
 import { ControlItem } from './ControlItem';
 import { Link } from 'react-router-dom';
+import { showComingSoonToast } from '../../utils/notifications';
 
 export function ExportTemplateButton({ onClick }) {
   return (
     <ControlItem
       icon={Download}
       label="Export Template"
-      description="Export as JSON file"
+      description="Export templateas JSON file"
       onClick={onClick}
     />
   );
@@ -44,7 +45,7 @@ export function ImportTemplateButton({ onClick }) {
       <ControlItem
         icon={Upload}
         label="Import Template"
-        description="Import from JSON file"
+        description="Import template from JSON file"
         onClick={handleClick}
       />
       <input
@@ -70,24 +71,24 @@ export function BrowseTemplatesButton() {
   );
 }
 
-export function FavoriteTemplatesButton() {
+export function FavoriteTemplatesButton({ setToast }) {
   return (
     <ControlItem
       icon={Star}
       label="Favorite Templates"
       description="Quick access to your saved templates"
-      href="/"
+      onClick={() => showComingSoonToast('Favorite Templates', setToast)}
     />
   );
 }
 
-export function CommunityTemplatesButton() {
+export function CommunityTemplatesButton({ setToast }) {
   return (
     <ControlItem
       icon={Share2}
       label="Community Templates"
       description="Discover and share templates"
-      href="/"
+      onClick={() => showComingSoonToast('Community Templates', setToast)}
     />
   );
 } 

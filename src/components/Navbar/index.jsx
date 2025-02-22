@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Logo } from '../Logo';
 import { validateImportData } from '../../utils/validation';
 import { MenuIcon, TutorialIcon, HelpIcon } from '../../shared/components/icons';
@@ -38,16 +39,13 @@ export function Navbar({ onSave, onImport }) {
     
     try {
       const savePromise = onSave();
-      const timerPromise = new Promise(resolve => setTimeout(resolve, 1000));
-      await Promise.all([savePromise, timerPromise]);
+      await savePromise;
       
       setShowSaveSuccess(true);
-      showToast('Changes saved successfully');
+      showToast('Changes saved successfully!');
       
-      setTimeout(() => {
-        setShowSaveSuccess(false);
-        closeMenu();
-      }, 1500);
+      setShowSaveSuccess(false);
+      closeMenu();
     } finally {
       setIsSaving(false);
     }
@@ -98,12 +96,15 @@ export function Navbar({ onSave, onImport }) {
           <div className="flex justify-between h-20 items-center">
             
             {/* Logo and title */}
-            <div className="flex-shrink-0 flex items-center pl-0 gap-2 sm:gap-3">
+            <Link 
+              to="/" 
+              className="flex-shrink-0 flex items-center pl-0 gap-2 sm:gap-3 hover:opacity-80 transition-opacity"
+            >
               <Logo className="h-7 w-7 sm:h-8 sm:w-8" />
               <h1 className="text-xl sm:text-2xl font-bold text-teal-300 truncate">
-                Todotable – Task Prioritizer
+                Dotable
               </h1>
-            </div>
+            </Link>
             
             <div className="hidden md:flex items-center space-x-6">
               <div className="relative group">
@@ -114,7 +115,7 @@ export function Navbar({ onSave, onImport }) {
                   <TutorialIcon className="w-5 h-5" />
                   Getting Started
                 </button>
-                {activeDropdown === 'getting-started' && <GettingStartedDropdown />}
+                {activeDropdown === 'getting-started' && <GettingStartedDropdown setToast={setToast} />}
               </div>
 
               <div className="relative group">
@@ -125,7 +126,7 @@ export function Navbar({ onSave, onImport }) {
                   <HelpIcon className="w-5 h-5" />
                   Help
                 </button>
-                {activeDropdown === 'help' && <HelpDropdown />}
+                {activeDropdown === 'help' && <HelpDropdown setToast={setToast} />}
               </div>
 
               {/* Profile Section */}
@@ -136,7 +137,12 @@ export function Navbar({ onSave, onImport }) {
                 >
                   <UserCircle className="w-8 h-8" />
                 </button>
-                {activeDropdown === 'profile' && <ProfileDropdown onSave={handleSave} />}
+                {activeDropdown === 'profile' && (
+                  <ProfileDropdown 
+                    onSave={handleSave} 
+                    setToast={setToast}
+                  />
+                )}
               </div>
             </div>
             
