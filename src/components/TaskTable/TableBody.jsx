@@ -36,7 +36,7 @@ export function TableBody({
             ))}
             <th className="px-4 py-2 text-center font-medium w-24">Total Score</th>
             <th className="px-4 py-2 text-center font-medium w-32">Deadline</th>
-            <th className="px-4 py-2 text-left font-medium w-32">Tags</th>
+            <th className="px-4 py-2 text-center font-medium w-32">Tags</th>
             <th className="px-4 py-2 text-center font-medium w-24">More Options</th>
           </tr>
         </thead>

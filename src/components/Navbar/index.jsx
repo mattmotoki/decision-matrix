@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Logo } from '../Logo';
 import { validateImportData } from '../../utils/validation';
 import { MenuIcon, TutorialIcon, HelpIcon } from '../../shared/components/icons';
@@ -98,12 +99,15 @@ export function Navbar({ onSave, onImport }) {
           <div className="flex justify-between h-20 items-center">
             
             {/* Logo and title */}
-            <div className="flex-shrink-0 flex items-center pl-0 gap-2 sm:gap-3">
+            <Link 
+              to="/" 
+              className="flex-shrink-0 flex items-center pl-0 gap-2 sm:gap-3 hover:opacity-80 transition-opacity"
+            >
               <Logo className="h-7 w-7 sm:h-8 sm:w-8" />
               <h1 className="text-xl sm:text-2xl font-bold text-teal-300 truncate">
                 Todotable – Task Prioritizer
               </h1>
-            </div>
+            </Link>
             
             <div className="hidden md:flex items-center space-x-6">
               <div className="relative group">

@@ -7,7 +7,6 @@ A task prioritizer tool that simplifies task planning by breaking it into two in
 
 This separation helps you make better decisions by focusing on one thing at a time - first the details of each task, then your general priorities. 
 
-Tasks are arranged in a matrix and ranked by the total score.
 
 ## Getting Started
 
