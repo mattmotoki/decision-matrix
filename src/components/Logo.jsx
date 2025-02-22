@@ -5,7 +5,7 @@ export function Logo({ className }) {
   return (
     <img 
       src={favicon}
-      alt="2Dotable Logo" 
+      alt="Todotable logo" 
       className={className}
     />
   );

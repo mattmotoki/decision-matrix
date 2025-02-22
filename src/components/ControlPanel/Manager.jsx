@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Pencil } from 'lucide-react';
 import { ControlItem } from './ControlItem';
-import { EditDimensionsModal } from './DimensionManager';
+import { EditDimensionsModal } from './DimensionEditor';
 import {
   ExportTemplateButton,
   ImportTemplateButton,

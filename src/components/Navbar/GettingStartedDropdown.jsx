@@ -10,7 +10,7 @@ export function GettingStartedDropdown() {
         <DropdownItem 
           icon={BookOpen}
           label="Tutorial"
-          description="Step-by-step guide to using 2Dotable"
+          description="Step-by-step guide to using Todotable"
           href="/tutorial"
         />
         <DropdownItem 

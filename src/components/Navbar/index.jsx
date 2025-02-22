@@ -101,7 +101,7 @@ export function Navbar({ onSave, onImport }) {
             <div className="flex-shrink-0 flex items-center pl-0 gap-2 sm:gap-3">
               <Logo className="h-7 w-7 sm:h-8 sm:w-8" />
               <h1 className="text-xl sm:text-2xl font-bold text-teal-300 truncate">
-                2Dotable – Task Prioritizer
+                Todotable – Task Prioritizer
               </h1>
             </div>
             
