@@ -1,10 +1,13 @@
 import React from 'react';
+import { showComingSoonToast } from '../../utils/notifications';
 
-export function DropdownItem({ icon: Icon, label, description, href, onClick }) {
+export function DropdownItem({ icon: Icon, label, description, href, onClick, setToast, implemented = false }) {
   const handleClick = (e) => {
     e.preventDefault(); // Prevent default navigation
-    if (onClick) {
+    if (implemented && onClick) {
       onClick(e);
+    } else {
+      showComingSoonToast(label, setToast);
     }
   };
 

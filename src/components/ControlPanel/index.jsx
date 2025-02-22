@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Manager } from './Manager';
-
+import { Toast } from '../../shared/components/Toast';
 
 export function ControlPanel({
   dimensions,
@@ -9,6 +9,8 @@ export function ControlPanel({
   onImport,
   onSave
 }) {
+  const [toast, setToast] = useState(null);
+
   return (
     <div className="mt-8">
       <div className="flex items-center justify-between mb-6">
@@ -22,8 +24,11 @@ export function ControlPanel({
           onExport={onExport}
           onImport={onImport}
           onSave={onSave}
+          setToast={setToast}
         />
       </div>
+
+      {toast && <Toast message={toast} onHide={() => setToast(null)} />}
     </div>
   );
 } 

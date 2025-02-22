@@ -39,16 +39,13 @@ export function Navbar({ onSave, onImport }) {
     
     try {
       const savePromise = onSave();
-      const timerPromise = new Promise(resolve => setTimeout(resolve, 1000));
-      await Promise.all([savePromise, timerPromise]);
+      await savePromise;
       
       setShowSaveSuccess(true);
-      showToast('Changes saved successfully');
+      showToast('Changes saved successfully!');
       
-      setTimeout(() => {
-        setShowSaveSuccess(false);
-        closeMenu();
-      }, 1500);
+      setShowSaveSuccess(false);
+      closeMenu();
     } finally {
       setIsSaving(false);
     }
@@ -118,7 +115,7 @@ export function Navbar({ onSave, onImport }) {
                   <TutorialIcon className="w-5 h-5" />
                   Getting Started
                 </button>
-                {activeDropdown === 'getting-started' && <GettingStartedDropdown />}
+                {activeDropdown === 'getting-started' && <GettingStartedDropdown setToast={setToast} />}
               </div>
 
               <div className="relative group">
@@ -129,7 +126,7 @@ export function Navbar({ onSave, onImport }) {
                   <HelpIcon className="w-5 h-5" />
                   Help
                 </button>
-                {activeDropdown === 'help' && <HelpDropdown />}
+                {activeDropdown === 'help' && <HelpDropdown setToast={setToast} />}
               </div>
 
               {/* Profile Section */}
@@ -140,7 +137,12 @@ export function Navbar({ onSave, onImport }) {
                 >
                   <UserCircle className="w-8 h-8" />
                 </button>
-                {activeDropdown === 'profile' && <ProfileDropdown onSave={handleSave} />}
+                {activeDropdown === 'profile' && (
+                  <ProfileDropdown 
+                    onSave={handleSave} 
+                    setToast={setToast}
+                  />
+                )}
               </div>
             </div>
             

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   ArrowLeft, 
@@ -15,6 +15,8 @@ import {
   Smartphone
 } from 'lucide-react';
 import { sampleTemplates } from '../data/sampleTemplates';
+import { showComingSoonToast } from '../utils/notifications';
+import { Toast } from '../shared/components/Toast';
 
 // Map template IDs to their corresponding icons
 const templateIcons = {
@@ -74,10 +76,10 @@ function TemplateCard({ template, onSelect }) {
 }
 
 export function BrowseTemplates() {
+  const [toast, setToast] = useState(null);
+
   const handleTemplateSelect = (template) => {
-    // TODO: Implement template selection logic
-    console.log('Selected template:', template);
-    alert(`Selected template: ${template.name}`);
+    showComingSoonToast('Template selection', setToast);
   };
 
   return (
@@ -107,6 +109,8 @@ export function BrowseTemplates() {
           />
         ))}
       </div>
+
+      {toast && <Toast message={toast} onHide={() => setToast(null)} />}
     </div>
   );
 } 
