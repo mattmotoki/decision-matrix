@@ -6,7 +6,6 @@ import { Navbar } from './components/Navbar';
 import { ControlPanel } from './components/ControlPanel';
 import { Footer } from './components/Footer';
 import { useTasks, STORAGE_KEYS } from './shared/hooks/useTasks';
-import { useDimensions } from './shared/hooks/useDimensions';
 import { calculateImportance, createFormValues, formatFormulaString } from './utils/taskUtils';
 import './App.css';
 import { BrowseTemplates } from './pages/BrowseTemplates';
@@ -16,7 +15,62 @@ import { TermsOfService } from './pages/TermsOfService';
 
 function loadTemplateFromStorage() {
   const storedTemplate = localStorage.getItem('currentTemplate');
-  if (!storedTemplate) return null;
+  if (!storedTemplate) {
+    // Default template for new users
+    const defaultTemplate = {
+      id: 'side-projects',
+      name: 'Side Project Prioritizer',
+      description: 'Helps prioritize which side projects are most aligned with your goals. Adjust weights to focus on lucrative projects or skill building.',
+      dimensions: [
+        { name: 'impact', label: 'Impact', weight: 5, description: 'The potential impact and value this project could create' },
+        { name: 'easiness', label: 'Easiness', weight: 3, description: 'How quickly and easily this can be completed' },
+        { name: 'financial_gain', label: 'Financial Gain', weight: 2, description: 'Expected monetary return or business value' },
+        { name: 'growth_potential', label: 'Growth Potential', weight: 4, description: 'Opportunity for learning and skill development' }
+      ]
+    };
+
+    // Add sample tasks for new users
+    const sampleTasks = [
+      {
+        id: Date.now() + Math.random(),
+        name: 'Mobile App Development',
+        description: 'Build a cross-platform mobile app using React Native',
+        createdAt: new Date().toISOString(),
+        impact: 4,
+        easiness: 2,
+        financial_gain: 4,
+        growth_potential: 5
+      },
+      {
+        id: Date.now() + Math.random() + 1,
+        name: 'Open Source Contribution',
+        description: 'Contribute to a popular open source project',
+        createdAt: new Date().toISOString(),
+        impact: 5,
+        easiness: 3,
+        financial_gain: 1,
+        growth_potential: 4
+      },
+      {
+        id: Date.now() + Math.random() + 2,
+        name: 'Technical Blog',
+        description: 'Start a blog sharing technical insights and learnings',
+        createdAt: new Date().toISOString(),
+        impact: 3,
+        easiness: 4,
+        financial_gain: 2,
+        growth_potential: 3
+      }
+    ];
+
+    // Store the template and tasks in localStorage
+    localStorage.setItem('currentTemplate', JSON.stringify(defaultTemplate));
+    localStorage.setItem(STORAGE_KEYS.ACTIVE_TASKS, JSON.stringify(sampleTasks));
+    localStorage.setItem(STORAGE_KEYS.COMPLETED_TASKS, JSON.stringify([]));
+    localStorage.setItem(STORAGE_KEYS.SHOW_WEIGHTED_SCORES, JSON.stringify(true));
+
+    return defaultTemplate;
+  }
   try {
     return JSON.parse(storedTemplate);
   } catch (e) {
