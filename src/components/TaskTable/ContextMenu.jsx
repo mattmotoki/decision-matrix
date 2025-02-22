@@ -23,15 +23,17 @@ export function ContextMenu({
 }) {
   useEffect(() => {
     const handleClickOutside = (event) => {
+      event.stopPropagation();
+      
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('click', handleClickOutside);
     }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
   }, [isOpen, setIsOpen]);
 
   if (!isOpen) return null;
@@ -40,19 +42,31 @@ export function ContextMenu({
     {
       icon: CheckCircle,
       label: 'Complete',
-      onClick: () => { onComplete(task); setIsOpen(false); },
+      onClick: (e) => { 
+        e.stopPropagation();
+        onComplete(task); 
+        setIsOpen(false); 
+      },
       color: 'green'
     },
     {
       icon: Edit,
       label: 'Edit',
-      onClick: () => { onEdit(task); setIsOpen(false); },
+      onClick: (e) => { 
+        e.stopPropagation();
+        onEdit(task); 
+        setIsOpen(false); 
+      },
       color: 'blue'
     },
     {
       icon: Trash2,
       label: 'Delete',
-      onClick: () => { onDelete(); setIsOpen(false); },
+      onClick: (e) => { 
+        e.stopPropagation();
+        onDelete(); 
+        setIsOpen(false); 
+      },
       color: 'red'
     }
   ];
@@ -65,6 +79,7 @@ export function ContextMenu({
         top: `${position.y}px`,
         left: `${position.x}px`,
       }}
+      onClick={(e) => e.stopPropagation()}
     >
       {menuItems.map(item => (
         <MenuItem key={item.label} {...item} />

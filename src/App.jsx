@@ -8,6 +8,8 @@ import { useTasks } from './shared/hooks/useTasks';
 import { useDimensions } from './shared/hooks/useDimensions';
 import { calculateImportance, createFormValues, formatFormulaString } from './utils/taskUtils';
 import './App.css';
+import { BrowseTemplates } from './pages/BrowseTemplates';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 export function App() {
   // State management
@@ -159,53 +161,68 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar 
-        onSave={handleSave}
-        onImport={handleImport}
-        onExport={handleExport}
-        tasks={tasks}
-        completedTasks={completedTasks}
-        dimensions={dimensions}
-        showWeightedScores={showWeightedScores}
-      />
-      <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
-        
-        <ControlPanel
-          dimensions={dimensions}
-          onDimensionsChange={setDimensions}
-          onExport={handleExport}
-          onImport={handleImport}
+    <BrowserRouter 
+      basename="/todotable"
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true
+      }}
+    >
+      <div className="min-h-screen bg-gray-50">
+        <Navbar 
           onSave={handleSave}
-        />
-
-        <div className="mt-8 flex justify-end">
-          <CreateTaskButton
-            dimensions={dimensions}
-            onSubmit={addTask}
-            previewScore={previewScore}
-            formulaString={formulaString}
-          />
-        </div>
-
-        <TaskTable
+          onImport={handleImport}
+          onExport={handleExport}
           tasks={tasks}
+          completedTasks={completedTasks}
           dimensions={dimensions}
-          onDeleteTask={deleteTask}
-          onEditTask={handleEditTask}
-          onCompleteTask={completeTask}
           showWeightedScores={showWeightedScores}
-          onToggleWeightedScores={(value) => setShowWeightedScores(value)}
         />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
+                <ControlPanel
+                  dimensions={dimensions}
+                  onDimensionsChange={setDimensions}
+                  onExport={handleExport}
+                  onImport={handleImport}
+                  onSave={handleSave}
+                />
 
-        <TaskArchive
-          tasks={completedTasks}
-          dimensions={dimensions}
-          onDeleteTask={deleteCompletedTask}
-          onRestoreTask={restoreTask}
-          showWeightedScores={showWeightedScores}
-        />
+                <div className="mt-8 flex justify-end">
+                  <CreateTaskButton
+                    dimensions={dimensions}
+                    onSubmit={addTask}
+                    previewScore={previewScore}
+                    formulaString={formulaString}
+                  />
+                </div>
+
+                <TaskTable
+                  tasks={tasks}
+                  dimensions={dimensions}
+                  onDeleteTask={deleteTask}
+                  onEditTask={handleEditTask}
+                  onCompleteTask={completeTask}
+                  showWeightedScores={showWeightedScores}
+                  onToggleWeightedScores={(value) => setShowWeightedScores(value)}
+                />
+
+                <TaskArchive
+                  tasks={completedTasks}
+                  dimensions={dimensions}
+                  onDeleteTask={deleteCompletedTask}
+                  onRestoreTask={restoreTask}
+                  showWeightedScores={showWeightedScores}
+                />
+              </div>
+            }
+          />
+          <Route path="/browse-templates" element={<BrowseTemplates />} />
+        </Routes>
       </div>
-    </div>
+    </BrowserRouter>
   );
 }

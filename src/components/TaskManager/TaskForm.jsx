@@ -84,6 +84,7 @@ export function TaskForm({
           
           {dimensions.map(dim => (
             <TaskValueSlider
+              key={dim.name}
               name={dim.name}
               label={dim.label}
               description={dim.description}
