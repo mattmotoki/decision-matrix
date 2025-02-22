@@ -82,10 +82,10 @@ function loadTemplateFromStorage() {
 // Create an inner component that can use the useNavigate hook
 function AppContent() {
   const navigate = useNavigate();
-  
+
   // Initialize template and dimensions from localStorage
   const [currentTemplate, setCurrentTemplate] = useState(loadTemplateFromStorage);
-  
+
   // Update localStorage whenever template changes
   useEffect(() => {
     if (currentTemplate) {
@@ -100,7 +100,7 @@ function AppContent() {
     const saved = localStorage.getItem('decision-matrix-show-weighted-scores');
     return saved ? JSON.parse(saved) : true;
   });
-  
+
   // Get tasks state and methods from the hook
   const {
     tasks,
@@ -157,10 +157,10 @@ function AppContent() {
       // Set active and completed tasks
       const activeTasks = (data.activeTasks || []).map(processTask);
       const completedTasks = (data.completedTasks || []).map(processTask);
-      
+
       setTasks(activeTasks);
       setCompletedTasks(completedTasks);
-      
+
       // Update settings if present
       if (data.settings?.showWeightedScores !== undefined) {
         setShowWeightedScores(Boolean(data.settings.showWeightedScores));
@@ -216,11 +216,11 @@ function AppContent() {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    
+
     try {
       const a = document.createElement('a');
       a.href = url;
-      a.download = `2dotable-template-${timestamp}.json`;
+      a.download = `dotable-template-${timestamp}.json`;
       document.body.appendChild(a);
       a.click();
     } finally {
@@ -247,7 +247,7 @@ function AppContent() {
       ...template,
       dimensions: newDimensions
     });
-    
+
     // Create sample tasks with proper structure
     const tasks = (template.tasks || []).map(task => {
       // Create a case-insensitive map of values
@@ -255,7 +255,7 @@ function AppContent() {
       Object.entries(task.values).forEach(([key, value]) => {
         normalizedValues[key.toLowerCase().replace(/\s+/g, '_')] = value;
       });
-      
+
       // Create the base task object
       const newTask = {
         id: Date.now() + Math.random(),
@@ -273,19 +273,19 @@ function AppContent() {
 
       return newTask;
     });
-    
+
     // Set tasks and update localStorage
     setTasks(tasks);
     localStorage.setItem(STORAGE_KEYS.ACTIVE_TASKS, JSON.stringify(tasks));
     localStorage.setItem(STORAGE_KEYS.COMPLETED_TASKS, JSON.stringify([]));
-    
+
     // Use React Router's navigate
     navigate('/');
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Navbar 
+      <Navbar
         onSave={handleSave}
         onImport={handleImport}
         onExport={handleExport}
@@ -357,8 +357,8 @@ function AppContent() {
 
 export function App() {
   return (
-    <BrowserRouter 
-      basename="/dotable/"
+    <BrowserRouter
+      basename="/dotable"
       future={{
         v7_startTransition: true,
         v7_relativeSplatPath: true

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { TableHeader } from './TableHeader';
 import { WeightedScoresToggle } from './WeightedScoresToggle';
 import { TableBody } from './TableBody';
 import { ConfirmationModal } from '../ConfirmationModal';
@@ -72,7 +71,7 @@ export function DoTable({
     <div className="mt-8">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <TableHeader />
+          <h2 className="text-xl font-semibold">Active Tasks</h2>
           <DownloadMenu tasks={tasks} dimensions={dimensions} />
         </div>
         <WeightedScoresToggle

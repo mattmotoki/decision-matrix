@@ -14,9 +14,11 @@ This separation helps you make better decisions by focusing on one thing at a ti
 npm install
 npm run dev
 ```
+Why is there no page on /dotable but there is a page on /dotable/?
 
 ## Bugs / TODO
 * features
+    * add tests
     * Create two options for tables: prioritizer and a ranker
         * prioritizer: items have deadlines and can be completed
         * ranker: items do not have deadlines and cannot be completed
@@ -41,7 +43,7 @@ npm run dev
 * UX improvements
     * add a temporary green checkmark to the save menu item when the save is complete
     * sort rows by column values
-    * add option to hide columns in the task table
+    * add option to hide dimension columns in the task table
     * make it easier to modify the dimension weights via double clicking the header row
     * double click on cell to edit
     * make task actions less redundants
