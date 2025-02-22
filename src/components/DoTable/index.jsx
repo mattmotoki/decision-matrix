@@ -8,7 +8,7 @@ import { TaskEditForm } from '../TaskManager';
 import { DownloadMenu } from './DownloadMenu';
 import { calculateImportance, formatFormulaString } from '../../utils/taskUtils';
 
-export function TaskTable({
+export function DoTable({
   tasks,
   dimensions,
   onDeleteTask,

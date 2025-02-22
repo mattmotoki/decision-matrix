@@ -18,13 +18,19 @@ export function TableBody({
     );
   }
 
+  // Sort tasks by total score in descending order
+  const sortedTasks = [...tasks].sort((a, b) => {
+    const scoreA = dimensions.reduce((sum, dim) => sum + (a[dim.name] || 0) * dim.weight, 0);
+    const scoreB = dimensions.reduce((sum, dim) => sum + (b[dim.name] || 0) * dim.weight, 0);
+    return scoreB - scoreA;
+  });
+
   return (
     <div className="w-full overflow-x-auto rounded-lg shadow bg-white">
       <table className="w-full min-w-[768px]">
         <thead className="bg-slate-700 text-white">
           <tr>
             <th className="px-4 py-2 text-left font-medium w-48">Task Name</th>
-            <th className="px-4 py-2 text-center font-medium w-32">Created</th>
             {dimensions.map(dim => (
               <th 
                 key={dim.name}
@@ -35,13 +41,11 @@ export function TableBody({
               </th>
             ))}
             <th className="px-4 py-2 text-center font-medium w-24">Total Score</th>
-            <th className="px-4 py-2 text-center font-medium w-32">Deadline</th>
-            <th className="px-4 py-2 text-left font-medium w-32">Tags</th>
             <th className="px-4 py-2 text-center font-medium w-24">More Options</th>
           </tr>
         </thead>
         <tbody className="text-gray-600 divide-y divide-gray-200">
-          {tasks.map((task, index) => (
+          {sortedTasks.map((task, index) => (
             <TaskRow
               key={task.id}
               task={task}
