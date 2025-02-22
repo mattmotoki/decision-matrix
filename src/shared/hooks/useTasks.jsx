@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { sortTasksByImportance } from '../../utils/taskUtils';
 
-const STORAGE_KEYS = {
+export const STORAGE_KEYS = {
   ACTIVE_TASKS: 'decision-matrix-tasks',
   COMPLETED_TASKS: 'decision-matrix-completed-tasks',
   SHOW_WEIGHTED_SCORES: 'decision-matrix-show-weighted-scores'
@@ -11,15 +11,34 @@ const STORAGE_KEYS = {
 export function useTasks(dimensions) {
   const [tasks, setTasks] = useState(() => {
     const savedTasks = localStorage.getItem(STORAGE_KEYS.ACTIVE_TASKS);
-    return savedTasks ? JSON.parse(savedTasks) : [];
+    try {
+      return savedTasks ? JSON.parse(savedTasks) : [];
+    } catch (e) {
+      console.error('Error parsing saved tasks:', e);
+      return [];
+    }
   });
   
   const [completedTasks, setCompletedTasks] = useState(() => {
     const savedCompletedTasks = localStorage.getItem(STORAGE_KEYS.COMPLETED_TASKS);
-    return savedCompletedTasks ? JSON.parse(savedCompletedTasks) : [];
+    try {
+      return savedCompletedTasks ? JSON.parse(savedCompletedTasks) : [];
+    } catch (e) {
+      console.error('Error parsing saved completed tasks:', e);
+      return [];
+    }
   });
   
   const [editingTaskId, setEditingTaskId] = useState(null);
+
+  // Add effect to sync with localStorage
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.ACTIVE_TASKS, JSON.stringify(tasks));
+  }, [tasks]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.COMPLETED_TASKS, JSON.stringify(completedTasks));
+  }, [completedTasks]);
 
   // Remove auto-save effects
   const saveToLocalStorage = (showWeightedScores) => {

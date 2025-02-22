@@ -7,7 +7,7 @@ export function Footer() {
       <div className="container mx-auto px-6 text-center text-gray-600">
         <div className="space-x-4 text-sm mb-2">
           <span className="text-sm">
-            © {new Date().getFullYear()} – Todotable
+            © {new Date().getFullYear()} – Dotable
           </span>
           <span className="text-gray-300">|</span>
           <Link to="/privacy-policy" className="hover:text-teal-600 transition-colors px-2">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { DimensionWeightSlider } from './DimensionWeightSlider';
 import { Modal } from '../Modal';
@@ -9,16 +9,32 @@ export function EditDimensionsModal({
   dimensions, 
   onDimensionsChange 
 }) {
+  const [localDimensions, setLocalDimensions] = useState(
+    dimensions.map(dim => ({
+      name: dim.name.toLowerCase().replace(/\s+/g, '_'),
+      label: dim.label || dim.name,
+      weight: dim.weight
+    }))
+  );
   const [newName, setNewName] = useState('');
   const [newWeight, setNewWeight] = useState(1);
 
+  // Update local dimensions when props change
+  useEffect(() => {
+    setLocalDimensions(dimensions.map(dim => ({
+      name: dim.name.toLowerCase().replace(/\s+/g, '_'),
+      label: dim.label || dim.name,
+      weight: dim.weight
+    })));
+  }, [dimensions]);
+
   const handleRemoveDimension = (dimensionName) => {
-    onDimensionsChange(dimensions.filter(dim => dim.name !== dimensionName));
+    setLocalDimensions(localDimensions.filter(dim => dim.name !== dimensionName));
   };
 
   const handleWeightChange = (dimensionName, newWeight) => {
-    onDimensionsChange(
-      dimensions.map(dim =>
+    setLocalDimensions(
+      localDimensions.map(dim =>
         dim.name === dimensionName
           ? { ...dim, weight: Number(newWeight) }
           : dim
@@ -29,8 +45,8 @@ export function EditDimensionsModal({
   const handleCreateDimension = (e) => {
     e.preventDefault();
     if (newName) {
-      onDimensionsChange([
-        ...dimensions,
+      setLocalDimensions([
+        ...localDimensions,
         {
           name: newName.toLowerCase().replace(/\s+/g, '_'),
           label: newName,
@@ -42,11 +58,16 @@ export function EditDimensionsModal({
     }
   };
 
+  const handleDone = () => {
+    onDimensionsChange(localDimensions);
+    onClose();
+  };
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Edit Dimensions"
+      title="Edit Template Dimensions"
     >
       <div className="space-y-8">
         {/* New Dimension Section */}
@@ -84,10 +105,10 @@ export function EditDimensionsModal({
         {/* Existing Dimensions Section */}
         <div className="space-y-4 pb-6 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Manage Existing Dimensions</h3>
-          {dimensions.map(dim => (
+          {localDimensions.map(dim => (
             <div key={dim.name} className="flex-1">
               <DimensionWeightSlider
-                name={`${dim.name}-edit-dimension-weight`}
+                name={dim.name}
                 label={dim.label}
                 value={dim.weight}
                 onChange={(value) => handleWeightChange(dim.name, value)}
@@ -100,12 +121,18 @@ export function EditDimensionsModal({
         </div>
 
         {/* Footer Section */}
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
             className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            Done
+            Cancel
+          </button>
+          <button
+            onClick={handleDone}
+            className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors"
+          >
+            Save & Continue
           </button>
         </div>
       </div>

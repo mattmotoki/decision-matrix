@@ -102,7 +102,7 @@ export function Navbar({ onSave, onImport }) {
             >
               <Logo className="h-7 w-7 sm:h-8 sm:w-8" />
               <h1 className="text-xl sm:text-2xl font-bold text-teal-300 truncate">
-                Todotable – Task Prioritizer
+                Dotable
               </h1>
             </Link>
             

@@ -26,10 +26,10 @@ export function Manager({
       <section className="mb">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <BrowseTemplatesButton />
+          <ExportTemplateButton onClick={onExport} />
+          <ImportTemplateButton onClick={onImport} />                    
           <FavoriteTemplatesButton setToast={setToast} />
           <CommunityTemplatesButton setToast={setToast} />
-          <ExportTemplateButton onClick={onExport} />
-          <ImportTemplateButton onClick={onImport} />          
           <ControlItem
             icon={Pencil}
             label="Edit Dimensions"

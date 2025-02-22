@@ -8,7 +8,7 @@ export function TermsOfService() {
       <section className="mb-6">
         <h2 className="text-2xl font-semibold mb-4 text-gray-700">1. Acceptance of Terms</h2>
         <p className="text-gray-600 mb-4">
-          By accessing and using Todotable, you agree to be bound by these Terms of Service. 
+          By accessing and using Dotable, you agree to be bound by these Terms of Service. 
           If you do not agree to these terms, please do not use our application.
         </p>
       </section>
@@ -16,7 +16,7 @@ export function TermsOfService() {
       <section className="mb-6">
         <h2 className="text-2xl font-semibold mb-4 text-gray-700">2. Use of Service</h2>
         <p className="text-gray-600 mb-4">
-          Todotable provides a task management and decision-making tool. 
+          Dotable provides a task management and decision-making tool. 
           You are responsible for maintaining the confidentiality of your account and data.
         </p>
       </section>
@@ -32,7 +32,7 @@ export function TermsOfService() {
       <section className="mb-6">
         <h2 className="text-2xl font-semibold mb-4 text-gray-700">4. Limitation of Liability</h2>
         <p className="text-gray-600 mb-4">
-          Todotable is provided "as is" without any warranties. 
+          Dotable is provided "as is" without any warranties. 
           We are not liable for any damages arising from the use of this application.
         </p>
       </section>

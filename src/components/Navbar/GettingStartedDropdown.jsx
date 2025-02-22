@@ -10,7 +10,7 @@ export function GettingStartedDropdown({ setToast }) {
         <DropdownItem 
           icon={BookOpen}
           label="Tutorial"
-          description="Step-by-step guide to using Todotable"
+          description="Step-by-step guide to using Dotable"
           href="/tutorial"
           setToast={setToast}
         />

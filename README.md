@@ -1,4 +1,4 @@
-# Todotable
+# Dotable
 
 A task prioritizer tool that simplifies task planning by breaking it into two intuitive steps:
 
@@ -17,6 +17,10 @@ npm run dev
 
 ## Bugs / TODO
 * features
+    * Create two options for tables: prioritizer and a ranker
+        * prioritizer: items have deadlines and can be completed
+        * ranker: items do not have deadlines and cannot be completed
+    * weights need to have a direction
     * user login / profiles
     * visualize task history
         * visualize completed tasks (score vs time)    

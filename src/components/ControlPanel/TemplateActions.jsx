@@ -9,7 +9,7 @@ export function ExportTemplateButton({ onClick }) {
     <ControlItem
       icon={Download}
       label="Export Template"
-      description="Export as JSON file"
+      description="Export templateas JSON file"
       onClick={onClick}
     />
   );
@@ -45,7 +45,7 @@ export function ImportTemplateButton({ onClick }) {
       <ControlItem
         icon={Upload}
         label="Import Template"
-        description="Import from JSON file"
+        description="Import template from JSON file"
         onClick={handleClick}
       />
       <input

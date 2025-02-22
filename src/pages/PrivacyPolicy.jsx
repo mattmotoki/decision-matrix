@@ -5,7 +5,7 @@ export function PrivacyPolicy() {
     <div className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
       <p className="mb-4">
-        At Todotable, we value your privacy and are committed to protecting your personal information. This Privacy Policy outlines how we collect, use, and safeguard your information when you use our application.
+        At Dotable, we value your privacy and are committed to protecting your personal information. This Privacy Policy outlines how we collect, use, and safeguard your information when you use our application.
       </p>
       <h2 className="text-2xl font-semibold mt-6 mb-4">Information We Collect</h2>
       <p className="mb-4">
